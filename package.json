@@ -22,11 +22,12 @@
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
-    "react-particles": "^2.12.2",
     "react-scroll-parallax": "^3.4.3",
+    "react-tsparticles": "^2.12.2",
     "react-youtube": "^10.1.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
+    "tsparticles": "^2.12.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
