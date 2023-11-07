@@ -1,8 +1,14 @@
+"use client";
+
 import { TextareaForm } from "@/components/textareaform"
+import { FixedTextareaForm } from "@/components/fixedtextareaform";
 import { Button } from "@/components/ui/button"
+import { useViewportStore } from "@/hooks/store";
 import { AiOutlineArrowRight } from 'react-icons/ai';
 
 const General = () => {
+    const { isInViewport } = useViewportStore();
+    console.log(isInViewport)
     return (
         <div className='flex mt-16 flex-col items-center w-full'>
             <h1 className='text-4xl mr-6 md:text-5xl lg:text-6xl'>
@@ -37,8 +43,13 @@ const General = () => {
                 </Button>
             </div>
             <TextareaForm />
-            <div className="hidden md:block ml-8 mt-9">
-                <div className="flex flex-wrap w-full gap-2">
+            {
+                !isInViewport && (
+                    <FixedTextareaForm />
+                )
+            }
+            <div className="hidden md:block mx-8 mt-9">
+                <div className="flex items-center justify-between flex-wrap w-full gap-2">
                     <p className="font-sans text-lg">
                         No inspiration? Try these:
                     </p>

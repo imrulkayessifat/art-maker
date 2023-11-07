@@ -51,7 +51,7 @@ const ImageSlider = () => {
     ];
 
     const [scrollPosition, setScrollPosition] = useState(0);
-    console.log(scrollPosition)
+  
     const handleScroll = () => {
         if (window.scrollY - 3400 < -200) {
             setScrollPosition(window.scrollY - 3400);
@@ -68,7 +68,7 @@ const ImageSlider = () => {
     }, []);
 
     const sliderStyle = {
-        transform: `translate3d(${scrollPosition}px,0px,0px)`,
+        transform: `translate3d(${scrollPosition-100}px,0px,0px)`,
         transition: 'transform 0.5s ease-in-out',
         position: 'relative', // Add this line
     };

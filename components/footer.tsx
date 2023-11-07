@@ -1,8 +1,23 @@
+"use client";
+
 import Image from "next/image"
 import Link from "next/link"
+import { useRef, useEffect } from "react";
+
+import useIsInViewport from "@/hooks/useIsInViewport";
+import { useViewportStore } from "@/hooks/store";
 const Footer = () => {
+    const ref = useRef(null);
+
+    const isInViewport = useIsInViewport({ ref });
+    const setInViewport = useViewportStore((state) => state.setInViewport);
+
+    useEffect(() => {
+        setInViewport(isInViewport);
+    }, [isInViewport]);
+
     return (
-        <div>
+        <div ref={ref}>
             <div className="hidden lg:flex py-4 justify-between items-center w-full border-t-2">
                 <div className="flex ml-8 items-center justify-between gap-2">
                     <Image

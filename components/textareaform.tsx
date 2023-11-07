@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -15,11 +16,13 @@ import {
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import useIsInViewport from '@/hooks/useIsInViewport';
+import { useViewportStore } from '@/hooks/store';
 
 const FormSchema = z.object({
   bio: z
     .string()
-    .min(10, {
+    .min(5, {
       message: "Bio must be at least 10 characters.",
     })
     .max(160, {
@@ -28,49 +31,79 @@ const FormSchema = z.object({
 })
 
 export function TextareaForm() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-      resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  })
+
+  const [textAreaValue, setTextAreaValue] = useState('This is the default text');
+
+  const ref = useRef(null);
+
+  const isInViewPort = useIsInViewport({ ref });
+  const setInViewport = useViewportStore((state) => state.setInViewport);
+
+  useEffect(() => {
+    setInViewport(isInViewPort);
+  }, [isInViewPort]);
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
     })
-  
-    
-    const [textAreaValue, setTextAreaValue] = useState('This is the default text');
-  
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-      toast({
-        title: "You submitted the following values:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      })
-    }
-  
-    return (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 hidden md:block space-y-6 mt-9 relative">
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem className="flex-grow">
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    className="resize-none w-full pr-20" 
-                    {...field}
-                    value={textAreaValue}
-                    onChange={(e) => setTextAreaValue(e.target.value)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button variant="sky" type="submit" className="absolute right-0 top-0 mr-3 mt-2" disabled={!textAreaValue}>Generate</Button> 
-        </form>
-      </Form>
-    )
   }
-  
+
+  return (
+    <Form {...form}>
+      <form
+        ref={ref}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={`
+        w-2/3  
+        space-y-6 
+        mt-9 
+        relative 
+        `}>
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem className="flex-grow">
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none w-full hidden 
+                  md:block pr-20"
+                  {...field}
+                  value={textAreaValue}
+                  onChange={(e) => setTextAreaValue(e.target.value)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button variant="sky" type="submit"
+          className="
+            absolute 
+            hidden 
+            md:block
+          hover:bg-sky-600 
+            right-0 
+            top-0 
+            mr-3 
+            mt-2"
+          disabled={!textAreaValue}
+        >
+          Generate
+        </Button>
+      </form>
+    </Form >
+  )
+}
+
