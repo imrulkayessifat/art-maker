@@ -31,11 +31,11 @@ const Navbar = async () => {
           </div>
         </div>
       </nav>
-      <div className='hidden md:block'>
+      <Link href={"/dashboard"} className='hidden md:block'>
         <Button variant="sky" className='mr-5'>
           Go to Dashboard
         </Button>
-      </div>
+      </Link>
       <div className='block md:hidden'>
         <div className='flex gap-2 justify-between items-center'>
           <Button variant="default">Sign In</Button>

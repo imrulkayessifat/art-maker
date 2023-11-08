@@ -61,7 +61,7 @@ export function FixedTextareaForm() {
                     hidden
                     md:fixed
                     md:block
-                    z-11
+                    z-50
                 `}>
                 <FormField
                     control={form.control}

@@ -51,7 +51,7 @@ const ImageSlider = () => {
     ];
 
     const [scrollPosition, setScrollPosition] = useState(0);
-  
+    console.log(scrollPosition)
     const handleScroll = () => {
         if (window.scrollY - 3400 < -200) {
             setScrollPosition(window.scrollY - 3400);
@@ -67,14 +67,14 @@ const ImageSlider = () => {
         };
     }, []);
 
-    const sliderStyle = {
-        transform: `translate3d(${scrollPosition-100}px,0px,0px)`,
+    const sliderStyle: React.CSSProperties = {
+        transform: `translate3d(${scrollPosition+200}px,0px,0px)`,
         transition: 'transform 0.5s ease-in-out',
         position: 'relative', // Add this line
     };
 
-    const secondSliderStyle = {
-        transform: `translate3d(${-scrollPosition-1000}px,0px,0px)`, // Opposite direction
+    const secondSliderStyle: React.CSSProperties = {
+        transform: `translate3d(${-scrollPosition-1200}px,0px,0px)`, // Opposite direction
         transition: 'transform 0.5s ease-in-out',
         position: 'relative',
     };
@@ -103,7 +103,7 @@ const ImageSlider = () => {
                             className='rounded-md'
                         />
                     ))}
-                </div>
+                </div> 
                 {/* secondimageslide */}
                 <div style={secondSliderStyle} className='flex gap-2 items-center justify-between'>
                     {secondImages.map((image, i) => (

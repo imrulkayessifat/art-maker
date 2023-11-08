@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/dashboard/navbar";
 
 const DashboardLayout = async ({
   children,
@@ -8,7 +8,7 @@ const DashboardLayout = async ({
 
   return ( 
     <div className="h-full relative">
-      <main className="md:pl-72 pb-10">
+      <main className="pb-10">
         <Navbar />
         {children}
       </main>
