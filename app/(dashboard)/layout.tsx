@@ -7,9 +7,8 @@ const DashboardLayout = async ({
 }) => {
 
   return ( 
-    <div className="h-full relative">
+    <div className="h-full">
       <main className="pb-10">
-        <Navbar />
         {children}
       </main>
     </div>

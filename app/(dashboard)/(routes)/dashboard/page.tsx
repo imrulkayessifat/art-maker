@@ -1,9 +1,11 @@
-import Image from 'next/image'
+import Hero from "@/components/dashboard/hero"
+import Navbar from "@/components/dashboard/navbar"
 
 export default function Home() {
   return (
-    <p className='text-6xl text-green-500'>
-      hello
-    </p>
+    <div className="flex flex-col w-full h-full overflow-hidden transition-all duration-500">
+      <Navbar />
+      <Hero />
+    </div>
   )
 }

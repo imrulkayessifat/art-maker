@@ -37,7 +37,7 @@ const icons: IconsProps[] = [
 
 const Navbar = () => {
     return (
-        <div className='w-full flex items-center justify-between border-b-2 p-3'>
+        <div className='w-full fixed bg-white max-h-[65px] z-50 flex items-center justify-between border-b-2 p-3'>
             <div>
                 <Link href={'/'}>
                     <ChevronLeft
