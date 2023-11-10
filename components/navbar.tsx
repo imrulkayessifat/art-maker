@@ -6,7 +6,7 @@ import Link from 'next/link'
 const Navbar = async () => {
 
   return (
-    <div className='flex z-10 p-2 sticky items-center border-b-2 justify-between  w-full'>
+    <div className='flex z-50 p-2 sticky items-center border-b-2 justify-between top-0 bg-white  w-full'>
       <Link className='flex ml-5 items-center' href={'/'}>
         <Image
           src="https://s3.us-east-1.wasabisys.com/imagine-frontend/gif/imagine-logo.gif" alt={''}

@@ -13,7 +13,7 @@ import Footer from '@/components/footer'
 export default function Landing() {
   
   return (
-    <>
+    <div className='relative flex flex-col justify-between min-h-screen'>
       {/* navbar */}
       <Navbar />
 
@@ -33,6 +33,6 @@ export default function Landing() {
       <Social />
       <Info />
       
-    </>
+    </div>
   )
 }

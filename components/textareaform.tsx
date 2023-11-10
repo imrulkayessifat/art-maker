@@ -137,7 +137,6 @@ export function TextareaForm() {
               absolute 
               hidden 
               md:block
-              z-50
               top-0
               mt-2
               right-28
