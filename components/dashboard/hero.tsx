@@ -5,15 +5,19 @@ import NegativePromt from "@/components/dashboard/negative_promt"
 import Cfg from "@/components/dashboard/cfg"
 import StepScale from "@/components/dashboard/step_scale"
 import Seed from "@/components/dashboard/seed"
+import { TextareaForm } from "@/components/textareaform"
 
 const Hero = () => {
     return (
-        <div className='grid grid-cols-6 mt-[65px] overflow-hidden'>
-            <div className='col-span-5 border-r-2'>
-                
+        <div className='grid grid-cols-6 '>
+            <div className='col-span-5 flex flex-col items-center justify-end   border-r-2'>
+                <div>
+                    image will render here!
+                </div>
+                <TextareaForm />
             </div>
-            <div className='col-span-1 overflow-y-scroll'>
-                <div className="flex flex-col p-3">
+            <div className='col-span-1 h-fit mt-[65px] overflow-hidden overflow-y-scroll'>
+                <div className="flex flex-col  p-3">
                     <AspectRatio />
                     <ModelDialog />
                     <ArtDialog />
