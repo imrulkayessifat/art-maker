@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AlertCircle, ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Dialog from './dialog';
+import HoverIcon from '@/components/dashboard/hover_icon';
 
 const ModelDialog = () => {
     const [open, setOpen] = useState(false)
@@ -11,10 +12,10 @@ const ModelDialog = () => {
         setOpen(!open);
     }
     return (
-        <div className="flex flex-col mt-3 border-b-2">
+        <div className="flex flex-col my-3 border-b-2">
             <div className="flex gap-2">
-                <h1 className="text-base">Models</h1>
-                <AlertCircle />
+                <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Models</span>
+                <HoverIcon content="demo text" />
             </div>
             <Button onClick={handleModel} className='flex justify-between gap-2 my-2' variant={"model"}>
                 <Image

@@ -5,7 +5,7 @@ import { AlertCircle, ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Dialog from '@/components/dashboard/dialog';
 import { Switch } from "@/components/ui/switch"
-import { Label } from '@/components/ui/label';
+import HoverIcon from '@/components/dashboard/hover_icon';
 
 
 const ArtDialog = () => {
@@ -14,10 +14,10 @@ const ArtDialog = () => {
         setOpen(!open);
     }
     return (
-        <div className="flex flex-col mt-3 border-b-2">
+        <div className="flex flex-col my-3 border-b-2">
             <div className="flex gap-2">
-                <h1 className="text-base">Art Styles</h1>
-                <AlertCircle />
+                <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Art Styles</span>
+                <HoverIcon content="demo text" />
             </div>
             <Button onClick={handleModel} className='flex w-full items-center justify-between gap-2 my-2' variant={"model"}>
                 <p>Add Style</p>
@@ -29,8 +29,10 @@ const ArtDialog = () => {
                     )
                 }
             </Button>
-            <div className="flex items-center justify-between mb-2 space-x-2 space-y-2">
-                <Label htmlFor="airplane-mode">High Resolution</Label>
+            <div className="flex items-center justify-between my-3 space-x-2 space-y-2">
+                <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">
+                    High Resolution
+                </span>
                 <Switch id="airplane-mode" />
             </div>
             <Dialog open={open} handleModel={handleModel} />

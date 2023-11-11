@@ -1,14 +1,14 @@
-import { AlertCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import HoverIcon from '@/components/dashboard/hover_icon'
 
 const Seed = () => {
     return (
-        <div className="flex flex-col mt-3 border-b-2">
+        <div className="flex flex-col my-3">
             <div className="flex gap-2">
-                <h1 className="text-base">Seed</h1>
-                <AlertCircle />
+                <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Seed</span>
+                <HoverIcon content="demo text" />
             </div>
-            <Input className='my-2' type="text" placeholder="Enter a seed"  />
+            <Input className='my-2' type="text" placeholder="Enter a seed" />
         </div>
     )
 }

@@ -16,7 +16,7 @@ const Hero = () => {
                 </div>
                 <TextareaForm />
             </div>
-            <div className='col-span-1 h-fit mt-[65px] overflow-hidden overflow-y-scroll'>
+            <div className='col-span-1'>
                 <div className="flex flex-col  p-3">
                     <AspectRatio />
                     <ModelDialog />

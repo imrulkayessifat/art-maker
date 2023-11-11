@@ -3,8 +3,8 @@ import React from 'react'
 
 export const Social = () => {
     return (
-        <div className='hidden md:block z-10'>
-            <div className='flex  flex-col justify-between fixed right-8 top-36 border-2 p-3 rounded'>
+        <div className='hidden md:block bg-white z-10'>
+            <div className='flex  flex-col bg-white justify-between fixed right-8 top-36 border-2 p-3 rounded'>
                 <Link className='mb-3' href={'/'}>
                     <svg width="20" height="21" fill="none" className="text-[#00aeff]"><path d="M10.862 7.68v.334H13.38l-.224 2.158h-2.294v7.994H8.177v-7.994H6.583V8.014H8.177V5.853c0-.61.148-1.37.593-1.968.432-.582 1.173-1.052 2.456-1.052l2.149.009v2.076h-1.469c-.194 0-.455.047-.675.225-.233.188-.369.484-.369.877v1.66Z" fill="currentColor" stroke="currentColor" stroke-width=".667"></path></svg>
                 </Link>

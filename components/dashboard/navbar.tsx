@@ -37,7 +37,7 @@ const icons: IconsProps[] = [
 
 const Navbar = () => {
     return (
-        <div className='w-full fixed bg-white max-h-[65px] z-50 flex items-center justify-between border-b-2 p-3'>
+        <div className='w-full sticky top-0 bg-white max-h-[65px] z-50 flex items-center justify-between border-b-2 p-3'>
             <div>
                 <Link href={'/'}>
                     <ChevronLeft
@@ -54,9 +54,9 @@ const Navbar = () => {
                                     {icon.svg}
                                 </Link>
                             </HoverCardTrigger>
-                            <HoverCardContent className="w-80">
+                            <HoverCardContent className="w-30 mt-5 bg-slate-900">
                                 <div className="space-y-1 space-x-1">
-                                    <h4 className="text-sm font-semibold">{icon.content}</h4>
+                                    <h4 className="text-sm text-white  font-semibold">{icon.content}</h4>
                                 </div>
                             </HoverCardContent>
                         </HoverCard>
