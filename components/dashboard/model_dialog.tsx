@@ -17,22 +17,26 @@ const ModelDialog = () => {
                 <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Models</span>
                 <HoverIcon content="demo text" />
             </div>
-            <Button onClick={handleModel} className='flex justify-between gap-2 my-2' variant={"model"}>
-                <Image
-                    src={'https://1966211409.rsc.cdn77.org/appStuff/imagine-fncisndcubnsduigfuds/assets/styles_v1/Imagine_V3.5.webp'}
-                    alt={''}
-                    width={25}
-                    height={25}
-                    className='rounded-md'
-                />
-                <p>Imagine V4</p>
-                {
-                    !open ? (
-                        <ChevronRight className='w-3/4 h-3/4' />
-                    ) : (
-                        <ChevronDown className='w-3/4 h-3/4' />
-                    )
-                }
+            <Button onClick={handleModel} className='flex w-full justify-between my-2 pr-1' variant={"model"}>
+                <div className='flex justify-between gap-2'>
+                    <Image
+                        src={'https://1966211409.rsc.cdn77.org/appStuff/imagine-fncisndcubnsduigfuds/assets/styles_v1/Imagine_V3.5.webp'}
+                        alt={''}
+                        width={25}
+                        height={25}
+                        className='rounded-md'
+                    />
+                    <p>Imagine V4</p>
+                </div>
+                <div>
+                    {
+                        !open ? (
+                            <ChevronRight className='w-3/4 h-3/4' />
+                        ) : (
+                            <ChevronDown className='w-3/4 h-3/4' />
+                        )
+                    }
+                </div>
             </Button>
             <Dialog open={open} handleModel={handleModel} />
         </div>

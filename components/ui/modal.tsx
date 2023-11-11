@@ -20,10 +20,11 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const [activeTitle, setActiveTitle] = useState<string>(titles[0]);
   const [contentData,setContentData] = useState<string[]>(content['Popular'])
-  console.log(contentData)
+
   useEffect(()=>{
     setContentData(content[activeTitle as keyof typeof content])
   },[activeTitle])
+  
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
