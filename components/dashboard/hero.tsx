@@ -26,7 +26,7 @@ const Hero = () => {
                 </div>
             </div>
             <div className='col-span-1'>
-                <div className="flex flex-col flex-shrink-0 max-h-[600px] overflow-hidden overflow-y-auto scroll-m-px   p-3">
+                <div className="flex flex-col flex-shrink-0  p-3">
                     <AspectRatio />
                     <ModelDialog />
                     <ArtDialog />
