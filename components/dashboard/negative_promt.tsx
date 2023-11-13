@@ -37,7 +37,7 @@ const NegativePromt = () => {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     })
-    console.log(form.getValues('negative_prompt'))
+    
     return (
         <Accordion type="single" collapsible className="w-full my-3">
             <AccordionItem value="item-1">

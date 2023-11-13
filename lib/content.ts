@@ -452,5 +452,3 @@ export const content = {
         "Zesty"
     ]
 }
-
-console.log(content['Popular'])

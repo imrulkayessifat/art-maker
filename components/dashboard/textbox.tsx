@@ -38,10 +38,6 @@ export function TextBox() {
     const setInImage = useImageStore((state) => state.setInImage);
     const textBoxModal = useTextBoxModal();
 
-    useEffect(()=>{
-        setInImage(image);
-    },[image])
-
     const handleMouseEnter = () => {
         setIsHovered(true);
     };
@@ -62,7 +58,8 @@ export function TextBox() {
 
     useEffect(() => {
         setInViewport(isInViewPort);
-    }, [isInViewPort]);
+        setInImage(image);
+    }, [isInViewPort,image]);
 
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -74,7 +71,7 @@ export function TextBox() {
             }, 2000);
         });
     }
-    console.log(image)
+    
     return (
         <>
             <Form {...form}>
@@ -131,7 +128,7 @@ export function TextBox() {
                                     right-28
                                 "
                                 >
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="mr-0 text-neutral-900 dark:text-white" xmlns="http://www.w3.org/2000/svg"><path d="M5.88333 10.5498H7.47222C9.0611 10.5498 9.85555 9.76626 9.85555 8.19911V6.63197C9.85555 5.06482 9.0611 4.28125 7.47222 4.28125H5.88333C4.29444 4.28125 3.5 5.06482 3.5 6.63197V8.19911C3.5 9.76626 4.29444 10.5498 5.88333 10.5498Z" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"></path><path d="M5.88333 20.999H7.47222C9.0611 20.999 9.85555 20.2155 9.85555 18.6483V17.0812C9.85555 15.514 9.0611 14.7305 7.47222 14.7305H5.88333C4.29444 14.7305 3.5 15.514 3.5 17.0812V18.6483C3.5 20.2155 4.29444 20.999 5.88333 20.999Z" stroke-width="1.75" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"></path><path d="M16.4771 20.999H18.066C19.6549 20.999 20.4493 20.2155 20.4493 18.6483V17.0812C20.4493 15.514 19.6549 14.7305 18.066 14.7305H16.4771C14.8882 14.7305 14.0938 15.514 14.0938 17.0812V18.6483C14.0938 20.2155 14.8882 20.999 16.4771 20.999Z" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"></path><path d="M18.6966 9.84082L19.7265 8.82502C20.7564 7.80923 20.7564 6.79343 19.7265 5.77764L18.6966 4.76185C17.6668 3.74605 16.6369 3.74605 15.607 4.76185L14.5771 5.77764C13.5472 6.79343 13.5472 7.80923 14.5771 8.82502L15.607 9.84082C16.6369 10.8566 17.6668 10.8566 18.6966 9.84082Z" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"></path></svg>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="mr-0 text-neutral-900 dark:text-white" xmlns="http://www.w3.org/2000/svg"><path d="M5.88333 10.5498H7.47222C9.0611 10.5498 9.85555 9.76626 9.85555 8.19911V6.63197C9.85555 5.06482 9.0611 4.28125 7.47222 4.28125H5.88333C4.29444 4.28125 3.5 5.06482 3.5 6.63197V8.19911C3.5 9.76626 4.29444 10.5498 5.88333 10.5498Z" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path><path d="M5.88333 20.999H7.47222C9.0611 20.999 9.85555 20.2155 9.85555 18.6483V17.0812C9.85555 15.514 9.0611 14.7305 7.47222 14.7305H5.88333C4.29444 14.7305 3.5 15.514 3.5 17.0812V18.6483C3.5 20.2155 4.29444 20.999 5.88333 20.999Z" strokeWidth="1.75" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path><path d="M16.4771 20.999H18.066C19.6549 20.999 20.4493 20.2155 20.4493 18.6483V17.0812C20.4493 15.514 19.6549 14.7305 18.066 14.7305H16.4771C14.8882 14.7305 14.0938 15.514 14.0938 17.0812V18.6483C14.0938 20.2155 14.8882 20.999 16.4771 20.999Z" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path><path d="M18.6966 9.84082L19.7265 8.82502C20.7564 7.80923 20.7564 6.79343 19.7265 5.77764L18.6966 4.76185C17.6668 3.74605 16.6369 3.74605 15.607 4.76185L14.5771 5.77764C13.5472 6.79343 13.5472 7.80923 14.5771 8.82502L15.607 9.84082C16.6369 10.8566 17.6668 10.8566 18.6966 9.84082Z" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path></svg>
                                 </Button>
                             ) : (
                                 <Button

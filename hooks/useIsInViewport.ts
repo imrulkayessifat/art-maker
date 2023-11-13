@@ -9,11 +9,12 @@ const useIsInViewport = ({ref}: UseIsInViewportProps) => {
 
     const observer = useMemo(
       () =>
-        new IntersectionObserver(([entry]) =>
-          setIsIntersecting(entry.isIntersecting),
-        ),
+        typeof IntersectionObserver !== 'undefined'
+          ? new IntersectionObserver(([entry]) => setIsIntersecting(entry.isIntersecting))
+          : { observe: () => {}, disconnect: () => {} },
       [],
     );
+    
   
     useEffect(() => {
         if (ref.current && ref.current instanceof Element) {

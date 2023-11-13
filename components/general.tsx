@@ -8,7 +8,7 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 
 const General = () => {
     const { isInViewport } = useViewportStore();
-    console.log(isInViewport)
+    
     return (
         <div className='flex mt-16 flex-col items-center w-full'>
             <h1 className='text-4xl mr-6 md:text-5xl lg:text-6xl'>

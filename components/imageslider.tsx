@@ -51,7 +51,7 @@ const ImageSlider = () => {
     ];
 
     const [scrollPosition, setScrollPosition] = useState(0);
-    console.log(scrollPosition)
+    
     const handleScroll = () => {
         if (window.scrollY - 3400 < -200) {
             setScrollPosition(window.scrollY - 3400);

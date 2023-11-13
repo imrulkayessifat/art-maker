@@ -34,7 +34,7 @@ const ArtDialog = () => {
             high_resolution: false,
         },
     })
-    console.log(form.getValues('high_resolution'))
+    
     return (
         <div className="flex flex-col my-3 border-b-2">
             <div className="flex gap-2">

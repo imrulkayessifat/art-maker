@@ -28,7 +28,7 @@ const Seed = () => {
             seed: 1
         },
     })
-    console.log(form.getValues('seed'))
+   
     return (
         <div className="flex flex-col my-3">
             <div className="flex gap-2">
