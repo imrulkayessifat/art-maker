@@ -68,13 +68,13 @@ const ImageSlider = () => {
     }, []);
 
     const sliderStyle: React.CSSProperties = {
-        transform: `translate3d(${scrollPosition+200}px,0px,0px)`,
+        transform: `translate3d(${scrollPosition + 200}px,0px,0px)`,
         transition: 'transform 0.5s ease-in-out',
-        position: 'relative', // Add this line
+        position: 'relative',
     };
 
     const secondSliderStyle: React.CSSProperties = {
-        transform: `translate3d(${-scrollPosition-1200}px,0px,0px)`, // Opposite direction
+        transform: `translate3d(${-scrollPosition - 1200}px,0px,0px)`,
         transition: 'transform 0.5s ease-in-out',
         position: 'relative',
     };
@@ -88,14 +88,15 @@ const ImageSlider = () => {
                     AI-Generated Art
                 </h1>
                 <p className='font-sans text-2xl'>
-                    See Imagine's potential unfold and create captivating art on our Text-to-Art Generator
+                    {"See Imagine's potential unfold and create captivating art on our Text-to-Art Generator"}
                 </p>
             </div>
-            {/* firstimageslide */}
+            
             <div className='flex flex-col gap-2 overflow-hidden'>
                 <div style={sliderStyle} className='flex gap-2 items-center justify-between'>
                     {images.map((image, i) => (
                         <Image
+                            key={i}
                             src={image}
                             alt={''}
                             width={"250"}
@@ -103,11 +104,12 @@ const ImageSlider = () => {
                             className='rounded-md'
                         />
                     ))}
-                </div> 
+                </div>
                 {/* secondimageslide */}
                 <div style={secondSliderStyle} className='flex gap-2 items-center justify-between'>
                     {secondImages.map((image, i) => (
                         <Image
+                            key={i}
                             src={image}
                             alt={''}
                             width={"250"}

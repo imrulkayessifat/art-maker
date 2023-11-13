@@ -28,7 +28,7 @@ const Profile = () => {
             <div className='m-8 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center'>
                 {
                     data.map((data, i) => (
-                        <Card className='pl-10 flex flex-col justify-between max-w-[350px] h-[200px]'>
+                        <Card key={i} className='pl-10 flex flex-col justify-between max-w-[350px] h-[200px]'>
                             <CardHeader>
                                 <CardTitle>{data.name}</CardTitle>
                             </CardHeader>
