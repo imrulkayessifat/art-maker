@@ -18,8 +18,10 @@ const RenderImage = () => {
         <div className="flex flex-shrink-1 items-center justify-center">
             {
                 isInImage.length >= 0 ? (
-                    <div onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave} className='relative mt-10'>
+                    <div
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                        className='relative mt-10'>
                         <Image
                             src={isInImage}
                             alt={''}
@@ -38,7 +40,7 @@ const RenderImage = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" className="stroke-[1.5]" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m10 14-5 5m0 0h4m-4 0v-4.007M10 10 5 5m0 0h4M5 5v4.007M14 10l5-5m0 0h-4m4 0v4.007M14 14l5 5m0 0h-4m4 0v-4.007"></path></svg>
                                 </div>
                                 <div className='cursor-pointer hover:bg-neutral-300 rounded p-1'>
-                                    <svg className="stroke-[1.5]" width="24" height="24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M4 6.6h16m-1.778 0v12.6c0 .9-.889 1.8-1.778 1.8H7.556c-.89 0-1.778-.9-1.778-1.8V6.6m2.666 0V4.8c0-.9.89-1.8 1.778-1.8h3.556c.889 0 1.778.9 1.778 1.8v1.8"></path></svg>
+                                    <svg className="stroke-[1.5] hover:text-red-500" width="24" height="24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M4 6.6h16m-1.778 0v12.6c0 .9-.889 1.8-1.778 1.8H7.556c-.89 0-1.778-.9-1.778-1.8V6.6m2.666 0V4.8c0-.9.89-1.8 1.778-1.8h3.556c.889 0 1.778.9 1.778 1.8v1.8"></path></svg>
                                 </div>
                             </div>
                         }
@@ -50,12 +52,11 @@ const RenderImage = () => {
                                 <div className='cursor-pointer hover:bg-neutral-300 rounded p-1'>
                                     <svg className="stroke-[1.5]" width="24" height="24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.3 10.202a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"></path><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12.9 3H9.3C4.8 3 3 4.8 3 9.3v5.4C3 19.2 4.8 21 9.3 21h5.4c4.5 0 6.3-1.8 6.3-6.3v-4.5"></path><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M18.18 7.88v-5.4l1.8 1.8M18.183 2.48l-1.8 1.8M3.602 18.257l4.437-2.979c.71-.477 1.737-.423 2.376.126l.297.261c.702.603 1.836.603 2.538 0l3.744-3.213c.702-.603 1.836-.603 2.538 0l1.467 1.26"></path></svg>
                                 </div>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded-t border-b-2 border-slate-700	p-1'>
+                                <div className='cursor-pointer hover:bg-neutral-300 rounded	p-1'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20" className="h-6 w-6 stroke-[1.5]"><path d="M2.984 4.3h11.534c1.383 0 2.5 1.117 2.5 2.5v2.767" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5.618 1.668 2.984 4.301l2.634 2.634M17.018 15.7H5.484a2.497 2.497 0 0 1-2.5-2.5v-2.766" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path><path d="m14.383 18.333 2.633-2.633-2.633-2.634" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                                 </div>
 
                             </div>
-
                         }
                     </div>
                 ) : (

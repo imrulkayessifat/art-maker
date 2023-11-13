@@ -34,7 +34,7 @@ const FormSchema = z.object({
 export function TextBox() {
 
     const [isHovered, setIsHovered] = useState(false);
-    const [image, setImage] = useState('/tea-leaf.png');
+    const [image, setImage] = useState('');
     const setInImage = useImageStore((state) => state.setInImage);
     const textBoxModal = useTextBoxModal();
 
