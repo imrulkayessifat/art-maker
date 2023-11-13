@@ -11,12 +11,12 @@ const AspectRatio = () => {
     return (
         <Accordion type="single" collapsible className="w-full my-3">
             <AccordionItem value="item-1">
-                <div className="w-full mb-3 flex justify-between">
-                    <div className="flex gap-2">
+                <div className="w-full mb-3 flex flex-shrink-0 justify-between">
+                    <div className="flex flex-shrink-0 gap-2">
                         <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Aspect Ratio</span>
                         <HoverIcon content="demo text" />
                     </div>
-                    <AccordionTrigger className="flex justify-between py-0">
+                    <AccordionTrigger className="flex flex-shrink-0 justify-between py-0">
 
                     </AccordionTrigger>
                 </div>

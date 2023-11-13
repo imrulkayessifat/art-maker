@@ -12,13 +12,13 @@ const ModelDialog = () => {
         setOpen(!open);
     }
     return (
-        <div className="flex flex-col my-3 border-b-2">
-            <div className="flex gap-2">
+        <div className="flex flex-shrink-0 flex-col my-3 border-b-2">
+            <div className="flex flex-shrink-0 gap-2">
                 <span className="text-xs font-medium text-neutral-500 transition-all duration-500 dark:text-neutral-40">Models</span>
                 <HoverIcon content="demo text" />
             </div>
-            <Button onClick={handleModel} className='flex w-full justify-between my-2 pr-1' variant={"model"}>
-                <div className='flex justify-between gap-2'>
+            <Button onClick={handleModel} className='flex w-full flex-shrink-0 justify-between my-2 pr-1' variant={"model"}>
+                <div className='flex flex-shrink-0 justify-between gap-2'>
                     <Image
                         src={'https://1966211409.rsc.cdn77.org/appStuff/imagine-fncisndcubnsduigfuds/assets/styles_v1/Imagine_V3.5.webp'}
                         alt={''}
@@ -26,7 +26,7 @@ const ModelDialog = () => {
                         height={25}
                         className='rounded-md'
                     />
-                    <p>Imagine V4</p>
+                    <span className='text-sm'>Imagine V4</span>
                 </div>
                 <div>
                     {
