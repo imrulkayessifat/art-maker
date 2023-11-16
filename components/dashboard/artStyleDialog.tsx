@@ -11,9 +11,9 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command"
-import { model,addToFavorites } from "@/lib/models";
+import { model,addToFavorites } from "@/lib/style_models";
 import { Button } from "@/components/ui/button";
-import { useDataStore } from "@/hooks/useModalDialog";
+import { useDataStore } from "@/hooks/useStyleDialog";
 
 interface DialogProps {
     open: boolean;
@@ -29,7 +29,7 @@ interface ModelItem {
 
 const titles = ['All', 'Popular', 'Favorites']
 
-const Dialog: React.FC<DialogProps> = (
+const ArtStyleDialog: React.FC<DialogProps> = (
     {
         open, handleModel
     }
@@ -123,4 +123,4 @@ const Dialog: React.FC<DialogProps> = (
     )
 }
 
-export default Dialog
+export default ArtStyleDialog

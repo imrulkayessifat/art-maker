@@ -2,58 +2,58 @@ interface ModelItem {
     id: string;
     img: string;
     txt: string;
-    isFav?: boolean; // Making isFav optional
+    isFav?: boolean;
 }
 export let model = {
     All: [
         {
             id:'1',
-            img: '/v5-anime.jpeg',
-            txt: 'V5 Anime',
+            img: '/style/cinematic_render.jpeg',
+            txt: 'Cinematic',
             isFav:false
         },
         {
             id:'2',
-            img: '/v5-beta.jpeg',
-            txt: 'V5 Beta',
+            img: '/style/euphoric.jpeg',
+            txt: 'Euphoric',
             isFav:false
         },
         {
             id:'3',
-            img: '/imagine-v4.jpeg',
-            txt: 'Imagine V4',
+            img: '/style/fantacy.jpeg',
+            txt: 'Fantacy',
             isFav:false
         },
         {
             id:'4',
-            img: '/image-v3.jpeg',
-            txt: 'Imagine V3',
+            img: '/style/halloween.jpeg',
+            txt: 'Halloween',
             isFav:false
         },
         {
             id:'5',
-            img: '/sdxl.jpeg',
-            txt: 'SDXL',
+            img: '/style/picasso.jpeg',
+            txt: 'Picasso',
             isFav:false
         },
     ],
     Popular: [
         {
             id:'1',
-            img: '/v5-anime.jpeg',
-            txt: 'V5 Anime',
+            img: '/style/cinematic_render.jpeg',
+            txt: 'Cinematic',
             isFav:false
         },
         {
             id:'2',
-            img: '/v5-beta.jpeg',
-            txt: 'V5 Beta',
+            img: '/style/euphoric.jpeg',
+            txt: 'Euphoric',
             isFav:false
         },
         {
             id:'3',
-            img: '/imagine-v4.jpeg',
-            txt: 'Imagine V4',
+            img: '/style/fantacy.jpeg',
+            txt: 'Fantacy',
             isFav:false
         },
     ],

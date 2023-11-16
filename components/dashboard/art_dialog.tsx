@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react'
+import Image from 'next/image';
 import { ChevronRight, ChevronDown } from 'lucide-react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -9,15 +10,15 @@ import * as z from "zod"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
 } from "@/components/ui/form"
 import { Button } from '@/components/ui/button'
-import Dialog from '@/components/dashboard/dialog';
+import ArtStyleDialog from '@/components/dashboard/artStyleDialog';
 import { Switch } from "@/components/ui/switch"
 import HoverIcon from '@/components/dashboard/hover_icon';
+import { useDataStore } from '@/hooks/useStyleDialog';
 
 const FormSchema = z.object({
     high_resolution: z.boolean().default(false).optional(),
@@ -25,16 +26,19 @@ const FormSchema = z.object({
 
 const ArtDialog = () => {
     const [open, setOpen] = useState(false)
+    const model = useDataStore((state) => state.model);
+
     const handleModel = () => {
         setOpen(!open);
     }
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
             high_resolution: false,
         },
     })
-    
+
     return (
         <div className="flex flex-col my-3 border-b-2">
             <div className="flex gap-2">
@@ -42,10 +46,15 @@ const ArtDialog = () => {
                 <HoverIcon content="demo text" />
             </div>
             <Button onClick={handleModel} className='flex relative w-full items-center justify-between my-2 pr-1' variant={"model"}>
-                <div>
-                    <p>
-                        Add Style
-                    </p>
+                <div className='flex flex-shrink-0 justify-between gap-2'>
+                    <Image
+                        src={model.img}
+                        alt={''}
+                        width={25}
+                        height={25}
+                        className='rounded-md'
+                    />
+                    <span className='text-sm'>{model.txt}</span>
                 </div>
                 <div>
                     {
@@ -80,7 +89,7 @@ const ArtDialog = () => {
                     </form>
                 </Form>
             </div>
-            <Dialog open={open} handleModel={handleModel} />
+            <ArtStyleDialog open={open} handleModel={handleModel} />
         </div>
     )
 }
