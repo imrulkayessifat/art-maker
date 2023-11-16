@@ -29,7 +29,7 @@ const Tools = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 items-center justify-center w-full gap-5'>
                 {
                     tools.map((tool, i) => (
-                        <Card className="pb-2 max-h-[440px] max-w-[458px]">
+                        <Card key={i} className="pb-2 max-h-[440px] max-w-[458px]">
                             <CardContent className="p-2">
                                 <Image
                                     src={tool.img}
