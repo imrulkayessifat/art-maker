@@ -1,9 +1,9 @@
 "use client";
 import Image from 'next/image'
 import { useState } from 'react'
-import { AlertCircle, ChevronRight, ChevronDown } from 'lucide-react'
+import { ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Dialog from './dialog';
+import Dialog from '@/components/dashboard/dialog';
 import HoverIcon from '@/components/dashboard/hover_icon';
 
 const ModelDialog = () => {
