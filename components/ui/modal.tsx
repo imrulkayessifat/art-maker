@@ -1,10 +1,17 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { content } from "@/lib/content";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { X } from 'lucide-react';
 
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { content, toggleCheck, countCheckedItems } from "@/lib/content";
+import { Button } from "@/components/ui/button";
+
+interface content {
+  id: number;
+  txt: string;
+  isCheck: boolean;
+}
 interface ModalProps {
   titles: string[];
   isOpen: boolean;
@@ -15,22 +22,36 @@ interface ModalProps {
 export const Modal: React.FC<ModalProps> = ({
   titles,
   isOpen,
-  onClose,
-  children
+  onClose
 }) => {
   const [activeTitle, setActiveTitle] = useState<string>(titles[0]);
-  const [contentData,setContentData] = useState<string[]>(content['Popular'])
+  const [contentData, setContentData] = useState<content[]>(content['Popular']);
+  const [checkedCounts, setCheckedCounts] = useState<{ [key: string]: number }>({});
 
-  useEffect(()=>{
-    setContentData(content[activeTitle as keyof typeof content])
-  },[activeTitle])
-  
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
     }
   };
 
+  const isChecked = (id: number) => {
+    toggleCheck(activeTitle, id)
+    countCheckedItems(activeTitle)
+    const updatedContent = content[activeTitle as keyof typeof content];
+    setContentData([...updatedContent]);
+
+    const updatedCheckedCounts: { [key: string]: number } = {};
+    titles.forEach((title) => {
+      const count = countCheckedItems(title);
+      updatedCheckedCounts[title] = count;
+    });
+    setCheckedCounts(updatedCheckedCounts);
+  }
+
+  useEffect(() => {
+    setContentData(content[activeTitle as keyof typeof content]);
+  }, [activeTitle])
+  console.log(checkedCounts)
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
       <DialogContent className="max-w-[700px]">
@@ -43,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({
                   key={i}
                   onClick={() => {
                     setActiveTitle(title);
-                    
+
                   }}
                   className={activeTitle === title ? 'bg-slate-200 rounded-lg' : ''}
                 >
@@ -55,8 +76,15 @@ export const Modal: React.FC<ModalProps> = ({
         </DialogHeader>
         <div className="flex flex-row h-[200px] flex-wrap overflow-y-auto gap-1 w-full">
           {
-            contentData.map((content,i)=>(
-              <Button variant={"outline"} key={i}>{content}</Button>
+            contentData.map((content, i) => (
+              <Button onClick={() => isChecked(content.id)} variant={"outline"} key={i}>
+                {content.txt}
+                {
+                  content.isCheck === true && (
+                    <X />
+                  )
+                }
+              </Button>
             ))
           }
         </div>
