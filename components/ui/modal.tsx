@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     setContentData(content[activeTitle as keyof typeof content]);
   }, [activeTitle])
-  console.log(checkedCounts)
+  
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
       <DialogContent className="max-w-[700px]">
@@ -69,6 +69,13 @@ export const Modal: React.FC<ModalProps> = ({
                   className={activeTitle === title ? 'bg-slate-200 rounded-lg' : ''}
                 >
                   {title}
+                  {/* {activeTitle === title && checkedCounts[activeTitle] > 0 && (
+                    )} */}
+                  {
+                    checkedCounts[title] > 0 && (
+                      <span className="font-sans text-sm mx-1">{checkedCounts[title]}</span>
+                    )
+                  }
                 </Button>
               ))
             }
@@ -77,7 +84,12 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="flex flex-row h-[200px] flex-wrap overflow-y-auto gap-1 w-full">
           {
             contentData.map((content, i) => (
-              <Button onClick={() => isChecked(content.id)} variant={"outline"} key={i}>
+              <Button
+                onClick={() => isChecked(content.id)}
+                variant={"outline"}
+                key={i}
+                className={`${content.isCheck ? 'border-sky-500' : ''}`}
+              >
                 {content.txt}
                 {
                   content.isCheck === true && (
