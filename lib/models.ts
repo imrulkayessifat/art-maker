@@ -65,7 +65,7 @@ export let model = {
             img: '/imagine-v4.jpeg',
             txt: 'Imagine V4',
             isFav: false,
-
+            isItemHovered: false
         },
     ],
     Favorites: [] as ModelItem[]
@@ -73,32 +73,23 @@ export let model = {
 
 export const addToFavorites = (
     id: string,
-    activeTitle: string,
-    setModelData:Dispatch<SetStateAction<ModelItem[]>>
+    
 ) => {
     const itemAllIndex = model.All.findIndex((item) => item.id === id);
     const itemPopularIndex = model.Popular.findIndex((item) => item.id === id);
     const itemFavIndex = model.Favorites.findIndex((item) => item.id === id);
 
-    if (itemAllIndex !== -1 && itemPopularIndex !== -1) {
-        if (model.All[itemAllIndex].isFav || model.Popular[itemPopularIndex].isFav) {
-            model.All[itemAllIndex].isFav = false;
-            model.Popular[itemPopularIndex].isFav = false;
-            if (itemFavIndex !== -1) {
-                model.Favorites.splice(itemFavIndex, 1);
-                if (activeTitle === 'Favorites') {
-                    setModelData(model.Favorites);
-                }
-            }
-        } else {
-            model.All[itemAllIndex].isFav = true;
-            model.Popular[itemPopularIndex].isFav = true;
-            if (itemFavIndex === -1) {
-                model.Favorites.push({ ...model.All[itemAllIndex], isFav: true });
-                if (activeTitle === 'Favorites') {
-                    setModelData(model.Favorites);
-                }
-            }
+    model.All[itemAllIndex].isFav = !model.All[itemAllIndex].isFav
+    if (model.Popular[itemPopularIndex]) {
+        model.Popular[itemPopularIndex].isFav = !model.Popular[itemPopularIndex].isFav
+    }
+    if (!model.All[itemAllIndex].isFav) {
+        if (itemFavIndex !== -1) {
+            model.Favorites.splice(itemFavIndex, 1);
+        }
+    } else {
+        if (itemFavIndex === -1) {
+            model.Favorites.push(model.All[itemAllIndex]);
         }
     }
 };

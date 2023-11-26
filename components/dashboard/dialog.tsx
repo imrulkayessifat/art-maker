@@ -36,7 +36,6 @@ const Dialog: React.FC<DialogProps> = (
     }
 ) => {
     const [activeTitle, setActiveTitle] = useState<string>(titles[0]);
-    const [isHovered, setIsHovered] = useState(false);
     const [modelData, setModelData] = useState<ModelItem[]>(
         model['All'].map((item) => ({ ...item, isItemHovered: false }))
     );
@@ -55,7 +54,12 @@ const Dialog: React.FC<DialogProps> = (
     };
 
     const addFavorite = (id: string) => {
-        addToFavorites(id, activeTitle, setModelData);
+        addToFavorites(id);
+        setModelData([...modelData])
+        if (activeTitle === 'Favorites') {
+            let filteredItems = modelData.filter(item => item.isFav);
+            setModelData(filteredItems)
+        }
     }
 
     const addData = (data: ModelItem) => {
@@ -65,8 +69,6 @@ const Dialog: React.FC<DialogProps> = (
     useEffect(() => {
         setModelData(model[activeTitle as keyof typeof model])
     }, [activeTitle])
-
-    console.log(modelData)
 
     return (
         <CommandDialog open={open} onOpenChange={handleModel}>
@@ -94,6 +96,7 @@ const Dialog: React.FC<DialogProps> = (
                     <div className="grid grid-cols-3 gap-2 m-5 w-full items-center justify-between">
                         {
                             modelData.map((model, i) => {
+                                console.log(model.isFav)
                                 return (
                                     <CommandItem key={i} className=" w-[120px] h-[100px] mb-2 p-0">
                                         <div
@@ -112,10 +115,11 @@ const Dialog: React.FC<DialogProps> = (
                                             />
                                             <span className="absolute font-bold bottom-2 left-1/4 text-xs text-white">{model.txt}</span>
                                             {
+
                                                 model.isItemHovered && (
                                                     <Heart
                                                         onClick={() => addFavorite(model.id)}
-                                                        className={`absolute ${model.isFav ? ' text-orange-500': 'text-white'} top-2 left-2`}
+                                                        className={`absolute ${model.isFav ? ' text-orange-500' : 'text-white'} top-2 left-2`}
                                                     />
                                                 )
                                             }

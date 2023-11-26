@@ -53,7 +53,12 @@ const ArtStyleDialog: React.FC<DialogProps> = (
     };
 
     const addFavorite = (id: string) => {
-        addToFavorites(id, activeTitle, setModelData);
+        addToFavorites(id);
+        setModelData([...modelData])
+        if (activeTitle === 'Favorites') {
+            let filteredItems = modelData.filter(item => item.isFav);
+            setModelData(filteredItems)
+        }
     }
 
     const addData = (data:ModelItem) => {
