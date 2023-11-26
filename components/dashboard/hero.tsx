@@ -25,8 +25,8 @@ const Hero = () => {
                     <TextBox />
                 </div>
             </div>
-            <div className='col-span-1'>
-                <div className="flex flex-col flex-shrink-0  p-3">
+            <div className='col-span-1 overflow-auto'>
+                <div className="flex flex-col flex-shrink-0 max-w-[210px] w-[210px] min-w-[210px]  p-3">
                     <AspectRatio />
                     <ModelDialog />
                     <ArtDialog />

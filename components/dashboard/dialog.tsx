@@ -11,7 +11,7 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command"
-import { model,addToFavorites } from "@/lib/models";
+import { model, addToFavorites } from "@/lib/models";
 import { Button } from "@/components/ui/button";
 import { useDataStore } from "@/hooks/useModalDialog";
 
@@ -24,7 +24,8 @@ interface ModelItem {
     id: string;
     img: string;
     txt: string;
-    isFav?:boolean;
+    isFav?: boolean;
+    isItemHovered?: boolean;
 }
 
 const titles = ['All', 'Popular', 'Favorites']
@@ -36,28 +37,36 @@ const Dialog: React.FC<DialogProps> = (
 ) => {
     const [activeTitle, setActiveTitle] = useState<string>(titles[0]);
     const [isHovered, setIsHovered] = useState(false);
-    const [modelData, setModelData] = useState<ModelItem[]>(model['All'])
+    const [modelData, setModelData] = useState<ModelItem[]>(
+        model['All'].map((item) => ({ ...item, isItemHovered: false }))
+    );
     const pushData = useDataStore((state) => state.pushData);
 
-    const handleMouseEnter = () => {
-        setIsHovered(true);
+    const handleMouseEnter = (index: number) => {
+        const updatedModelData = [...modelData];
+        updatedModelData[index].isItemHovered = true;
+        setModelData(updatedModelData);
     };
 
-    const handleMouseLeave = () => {
-        setIsHovered(false);
+    const handleMouseLeave = (index: number) => {
+        const updatedModelData = [...modelData];
+        updatedModelData[index].isItemHovered = false;
+        setModelData(updatedModelData);
     };
 
-    const addFavorite = (id:string) => {
-        addToFavorites(id);
+    const addFavorite = (id: string) => {
+        addToFavorites(id, activeTitle, setModelData);
     }
 
-    const addData = (data:ModelItem) => {
+    const addData = (data: ModelItem) => {
         pushData(data)
     }
 
     useEffect(() => {
         setModelData(model[activeTitle as keyof typeof model])
     }, [activeTitle])
+
+    console.log(modelData)
 
     return (
         <CommandDialog open={open} onOpenChange={handleModel}>
@@ -86,12 +95,12 @@ const Dialog: React.FC<DialogProps> = (
                         {
                             modelData.map((model, i) => {
                                 return (
-                                    <CommandItem  key={i} className=" w-[120px] h-[100px] mb-2 p-0">
+                                    <CommandItem key={i} className=" w-[120px] h-[100px] mb-2 p-0">
                                         <div
                                             className="rounded-md hover:cursor-pointer relative w-[100px] h-[100px]"
-                                            onMouseEnter={handleMouseEnter}
-                                            onMouseLeave={handleMouseLeave}
-                                            onClick={()=>{addData(model);handleModel}}
+                                            onMouseEnter={() => handleMouseEnter(i)}
+                                            onMouseLeave={() => handleMouseLeave(i)}
+                                            onClick={() => { addData(model); handleModel }}
                                             key={i}
                                         >
                                             <Image
@@ -103,10 +112,10 @@ const Dialog: React.FC<DialogProps> = (
                                             />
                                             <span className="absolute font-bold bottom-2 left-1/4 text-xs text-white">{model.txt}</span>
                                             {
-                                                isHovered && (
+                                                model.isItemHovered && (
                                                     <Heart
                                                         onClick={() => addFavorite(model.id)}
-                                                        className={`absolute ${model.isFav && ' text-orange-500'} top-2 left-2 text-white`}
+                                                        className={`absolute ${model.isFav ? ' text-orange-500': 'text-white'} top-2 left-2`}
                                                     />
                                                 )
                                             }
