@@ -26,9 +26,9 @@ const ImageSlider = () => {
             const currentScrollPos = window.scrollY;
             if (inView1) {
                 if (currentScrollPos > prevScrollValue1) {
-                    setScrollPosition1((prev) => prev + 10)
+                    setScrollPosition1((prev) => prev + 5)
                 } else {
-                    setScrollPosition1((prev) => prev - 10)
+                    setScrollPosition1((prev) => prev - 5)
                 }
             }
             setPrevScrollValue1(currentScrollPos);
@@ -41,9 +41,9 @@ const ImageSlider = () => {
             const currentScrollPos = window.scrollY;
             if (inView2) {
                 if (currentScrollPos > prevScrollValue2) {
-                    setScrollPosition2((prev) => prev - 10)
+                    setScrollPosition2((prev) => prev - 5)
                 } else {
-                    setScrollPosition2((prev) => prev + 10)
+                    setScrollPosition2((prev) => prev + 5)
                 }
             }
             setPrevScrollValue2(currentScrollPos);
@@ -63,13 +63,13 @@ const ImageSlider = () => {
 
     const sliderStyle1: React.CSSProperties = {
         transform: `translate3d(${scrollPosition1}px,0px,0px)`,
-        transition: 'transform 0.5s ease-in-out',
+        transition: 'transform 0.05s ease-in-out',
         position: 'relative',
     };
 
     const sliderStyle2: React.CSSProperties = {
         transform: `translate3d(${scrollPosition2}px,0px,0px)`,
-        transition: 'transform 0.5s ease-in-out',
+        transition: 'transform 0.05s ease-in-out',
         position: 'relative',
     };
     return (

@@ -1,4 +1,3 @@
-import { UserButton } from "@clerk/nextjs";
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -6,7 +5,7 @@ import Link from 'next/link'
 const Navbar = async () => {
 
   return (
-    <div className='flex z-50 p-2 sticky items-center border-b-2 justify-between top-0 bg-white  w-full'>
+    <div className='flex z-50 p-2 sticky items-center border-b-2 overflow-hidden justify-between top-0 bg-white  w-full'>
       <Link className='flex ml-5 items-center' href={'/'}>
         <Image
           src="https://s3.us-east-1.wasabisys.com/imagine-frontend/gif/imagine-logo.gif" alt={''}

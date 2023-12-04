@@ -9,27 +9,25 @@ import Profile from '@/components/profile'
 import Footer from '@/components/footer'
 
 export default function Landing() {
-  
+
   return (
     <div className='relative flex flex-col justify-between min-h-screen'>
-      
-      <Navbar />
+        <Navbar />
 
-      <General />
+        <General />
 
-      <VideoSection />
+        <VideoSection />
 
-      <Tools />
+        <Tools />
 
-      <ImageSlider />
+        <ImageSlider />
 
-      <Profile />
+        <Profile />
 
-      <Footer />
+        <Footer />
 
-      <Social />
-      <Info />
-      
+        <Social />
+        <Info />
     </div>
   )
 }
