@@ -17,7 +17,7 @@ const Footer = () => {
     }, [isInViewport]);
 
     return (
-        <div ref={ref}>
+        <div className=" bg-white" ref={ref}>
             <div className="hidden lg:flex py-4 justify-between items-center w-full border-t-2">
                 <div className="flex ml-8 items-center justify-between gap-2">
                     <Image

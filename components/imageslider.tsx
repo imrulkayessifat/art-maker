@@ -73,7 +73,7 @@ const ImageSlider = () => {
         position: 'relative',
     };
     return (
-        <div className='flex flex-col gap-6 '>
+        <div className='flex bg-white flex-col gap-6 '>
             <div className='flex flex-col gap-1 m-8'>
                 <p className='font-sans text-base'>
                     DIVE INTO THE WORLD OF

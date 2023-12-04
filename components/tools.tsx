@@ -11,7 +11,7 @@ import { tools } from "@/lib/tools"
 
 const Tools = () => {
     return (
-        <div className='flex flex-col m-8 gap-6'>
+        <div className='flex bg-white flex-col m-8 gap-6'>
             <div className='flex flex-col gap-1'>
                 <p className='font-sans text-base'>
                     DISCOVER THE POTENTIAL OF
