@@ -41,7 +41,7 @@ const Tools = () => {
                                     className="rounded-md"
                                 />
                             </CardContent>
-                            <CardFooter className="flex pt-3 rounded-md bg-gray-800 mx-2 justify-between">
+                            <CardFooter className="flex py-2 rounded-md bg-gray-800 mx-2 justify-between">
                                 <div>
                                     <p className="font-sans text-white text-base md:text-xl">
                                         {tool.p1}
