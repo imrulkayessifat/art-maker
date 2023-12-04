@@ -14,10 +14,10 @@ const General = () => {
     return (
         <>
             <div className='flex mt-16 flex-col items-center w-full'>
-                <h1 className='text-4xl mr-6 md:text-5xl lg:text-6xl'>
+                <h1 className='text-3xl mr-6 md:text-5xl lg:text-6xl'>
                     Text to image with AI Art
                 </h1>
-                <h1 className='text-4xl md:text-5xl lg:text-6xl'>
+                <h1 className='text-3xl md:text-5xl lg:text-6xl'>
                     Generator
                 </h1>
                 <div className='hidden md:block  mt-9'>
