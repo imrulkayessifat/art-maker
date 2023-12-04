@@ -1,5 +1,3 @@
-// "use client";
-
 import Navbar from '@/components/navbar'
 import { Social } from '@/components/social'
 import Info from '@/components/info'
@@ -14,10 +12,9 @@ export default function Landing() {
   
   return (
     <div className='relative flex flex-col justify-between min-h-screen'>
-      {/* navbar */}
+      
       <Navbar />
 
-      {/* general */}
       <General />
 
       <VideoSection />

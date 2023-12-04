@@ -18,41 +18,47 @@ const ImageSlider = () => {
         threshold: 0.2,
     });
 
-    const [prevScrollValue1, setPrevScrollValue1] = useState(window.scrollY);
-    const [prevScrollValue2, setPrevScrollValue2] = useState(window.scrollY);
+    const [prevScrollValue1, setPrevScrollValue1] = useState(0);
+    const [prevScrollValue2, setPrevScrollValue2] = useState(0);
 
     const handleScroll1 = useCallback(() => {
-        const currentScrollPos = window.scrollY;
-        if (inView1) {
-            if (currentScrollPos > prevScrollValue1) {
-                setScrollPosition1((prev) => prev + 10)
-            } else {
-                setScrollPosition1((prev) => prev - 10)
+        if (typeof window !== 'undefined') {
+            const currentScrollPos = window.scrollY;
+            if (inView1) {
+                if (currentScrollPos > prevScrollValue1) {
+                    setScrollPosition1((prev) => prev + 10)
+                } else {
+                    setScrollPosition1((prev) => prev - 10)
+                }
             }
+            setPrevScrollValue1(currentScrollPos);
         }
-        setPrevScrollValue1(currentScrollPos);
-    }, [window.scrollY, prevScrollValue1, inView1])
+    }, [ prevScrollValue1, inView1])
 
 
     const handleScroll2 = useCallback(() => {
-        const currentScrollPos = window.scrollY;
-        if (inView2) {
-            if (currentScrollPos > prevScrollValue2) {
-                setScrollPosition2((prev) => prev - 10)
-            } else {
-                setScrollPosition2((prev) => prev + 10)
+        if (typeof window !== 'undefined') {
+            const currentScrollPos = window.scrollY;
+            if (inView2) {
+                if (currentScrollPos > prevScrollValue2) {
+                    setScrollPosition2((prev) => prev - 10)
+                } else {
+                    setScrollPosition2((prev) => prev + 10)
+                }
             }
+            setPrevScrollValue2(currentScrollPos);
         }
-        setPrevScrollValue2(currentScrollPos);
-    }, [window.scrollY, prevScrollValue2, inView2])
+    }, [ prevScrollValue2, inView2])
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll1);
-        window.addEventListener('scroll', handleScroll2);
-        return () => {
-            window.removeEventListener('scroll', handleScroll1);
-            window.removeEventListener('scroll', handleScroll2);
-        };
+        if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', handleScroll1);
+            window.addEventListener('scroll', handleScroll2);
+            return () => {
+                window.removeEventListener('scroll', handleScroll1);
+                window.removeEventListener('scroll', handleScroll2);
+            };
+        }
     }, [prevScrollValue1, prevScrollValue2, inView1, inView2]);
 
     const sliderStyle1: React.CSSProperties = {
