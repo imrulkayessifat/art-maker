@@ -11,7 +11,7 @@ const Info = () => {
     return (
         <div className={`block md:hidden bottom-10 w-full fixed z-10 ${isInViewport ? 'opacity-0' : ''}`}>
             <div className='flex items-center justify-center'>
-                <div className='rounded-lg flex justify-evenly w-1/2 bg-neutral-800 items-center m-2 py-3'>
+                <div className='rounded-lg min-w-[230px] flex justify-evenly w-1/2 bg-neutral-800 items-center m-2 py-3'>
                     <div className='mx-2 pr-4 border-r-2 '>
                         <Link href={'/'}>
                             <p className='text-white'>
