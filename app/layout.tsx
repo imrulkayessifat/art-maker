@@ -1,6 +1,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ThemeProvider } from "@/components/theme-provider"
+
 import { Toaster } from '@/components/ui/toaster'
 import { ModalProvider } from '@/providers/modal-provider'
 
@@ -19,9 +21,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
-        <Toaster />
-        <ModalProvider />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+          <ModalProvider />
+        </ThemeProvider>
       </body>
     </html>
   )

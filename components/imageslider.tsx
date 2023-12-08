@@ -10,7 +10,7 @@ import { secondImages } from '@/lib/slider/secondImages';
 const ImageSlider = () => {
 
     const [scrollPosition1, setScrollPosition1] = useState(-500);
-    const [scrollPosition2, setScrollPosition2] = useState(-500);
+    const [scrollPosition2, setScrollPosition2] = useState(-600);
     const [inViewRef1, inView1] = useInView({
         threshold: 0.2,
     });
@@ -26,9 +26,9 @@ const ImageSlider = () => {
             const currentScrollPos = window.scrollY;
             if (inView1) {
                 if (currentScrollPos > prevScrollValue1) {
-                    setScrollPosition1((prev) => prev + 5)
+                    setScrollPosition1((prev) => prev + 3)
                 } else {
-                    setScrollPosition1((prev) => prev - 5)
+                    setScrollPosition1((prev) => prev - 3)
                 }
             }
             setPrevScrollValue1(currentScrollPos);
@@ -63,17 +63,17 @@ const ImageSlider = () => {
 
     const sliderStyle1: React.CSSProperties = {
         transform: `translate3d(${scrollPosition1}px,0px,0px)`,
-        transition: 'transform 0.05s ease-in-out',
+        transition: 'transform 0.05s ease-in',
         position: 'relative',
     };
 
     const sliderStyle2: React.CSSProperties = {
         transform: `translate3d(${scrollPosition2}px,0px,0px)`,
-        transition: 'transform 0.05s ease-in-out',
+        transition: 'transform 0.05s ease-in',
         position: 'relative',
     };
     return (
-        <div className='hidden md:flex bg-white flex-col gap-6 '>
+        <div className='hidden md:flex flex-col gap-6 '>
             <div className='flex flex-col gap-1 m-8'>
                 <p className='font-sans text-base'>
                     DIVE INTO THE WORLD OF

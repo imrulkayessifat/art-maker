@@ -11,7 +11,7 @@ import { tools } from "@/lib/tools"
 
 const Tools = () => {
     return (
-        <div className='flex bg-white flex-col m-8 gap-6'>
+        <div className='flex flex-col m-8 gap-6'>
             <div className='flex flex-col gap-1'>
                 <p className='font-sans text-base'>
                     DISCOVER THE POTENTIAL OF
@@ -26,7 +26,7 @@ const Tools = () => {
                     inspiration and take your artworks to new heights with our AI image generator tools.
                 </p>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 items-center justify-center w-full gap-5'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center w-full gap-5'>
                 {
                     tools.map((tool, i) => (
                         <Card key={i} className="pb-2 max-h-[460px] max-w-[458px]">
