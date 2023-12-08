@@ -11,7 +11,7 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command"
-import { model,addToFavorites } from "@/lib/style_models";
+import { model, addToFavorites } from "@/lib/style_models";
 import { Button } from "@/components/ui/button";
 import { useDataStore } from "@/hooks/useStyleDialog";
 
@@ -52,7 +52,8 @@ const ArtStyleDialog: React.FC<DialogProps> = (
         setModelData(updatedModelData);
     };
 
-    const addFavorite = (id: string) => {
+    const addFavorite = (e: React.MouseEvent<SVGSVGElement, MouseEvent>,id: string) => {
+        e.stopPropagation();
         addToFavorites(id);
         setModelData([...modelData])
         if (activeTitle === 'Favorites') {
@@ -61,7 +62,7 @@ const ArtStyleDialog: React.FC<DialogProps> = (
         }
     }
 
-    const addData = (data:ModelItem) => {
+    const addData = (data: ModelItem) => {
         pushData(data)
     }
 
@@ -96,12 +97,12 @@ const ArtStyleDialog: React.FC<DialogProps> = (
                         {
                             modelData.map((model, i) => {
                                 return (
-                                    <CommandItem  key={i} className=" w-[120px] h-[100px] mb-2 p-0">
+                                    <CommandItem key={i} className=" w-[120px] h-[100px] mb-2 p-0">
                                         <div
                                             className="rounded-md hover:cursor-pointer relative w-[100px] h-[100px]"
                                             onMouseEnter={() => handleMouseEnter(i)}
                                             onMouseLeave={() => handleMouseLeave(i)}
-                                            onClick={()=>{addData(model);handleModel}}
+                                            onClick={() => { addData(model); handleModel() }}
                                             key={i}
                                         >
                                             <Image
@@ -115,8 +116,10 @@ const ArtStyleDialog: React.FC<DialogProps> = (
                                             {
                                                 model.isItemHovered && (
                                                     <Heart
-                                                        onClick={() => addFavorite(model.id)}
-                                                        className={`absolute ${model.isFav ? ' text-orange-500': 'text-white'} top-2 left-2`}
+                                                        onClick={(e) => {
+                                                            addFavorite(e,model.id);
+                                                        }}
+                                                        className={`absolute ${model.isFav ? ' text-orange-500' : 'text-white'} top-2 left-2`}
                                                     />
                                                 )
                                             }

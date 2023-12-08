@@ -53,7 +53,8 @@ const Dialog: React.FC<DialogProps> = (
         setModelData(updatedModelData);
     };
 
-    const addFavorite = (id: string) => {
+    const addFavorite = (e: React.MouseEvent<SVGSVGElement, MouseEvent>,id: string) => {
+        e.stopPropagation()
         addToFavorites(id);
         setModelData([...modelData])
         if (activeTitle === 'Favorites') {
@@ -84,7 +85,7 @@ const Dialog: React.FC<DialogProps> = (
                                 onClick={() => {
                                     setActiveTitle(title);
                                 }}
-                                className={activeTitle === title ? 'bg-slate-200 rounded-lg' : ''}
+                                className={activeTitle === title ? 'bg-slate-200 dark:bg-gray-300 rounded-lg' : ''}
                             >
                                 <span>{title}</span>
                             </Button>
@@ -98,12 +99,14 @@ const Dialog: React.FC<DialogProps> = (
                             modelData.map((model, i) => {
                                 console.log(model.isFav)
                                 return (
-                                    <CommandItem key={i} className=" w-[120px] h-[100px] mb-2 p-0">
+                                    <CommandItem
+                                        key={i}
+                                        className=" w-[120px] h-[100px] mb-2 p-0">
                                         <div
                                             className="rounded-md hover:cursor-pointer relative w-[100px] h-[100px]"
                                             onMouseEnter={() => handleMouseEnter(i)}
                                             onMouseLeave={() => handleMouseLeave(i)}
-                                            onClick={() => { addData(model); handleModel }}
+                                            onClick={() => { addData(model); handleModel() }}
                                             key={i}
                                         >
                                             <Image
@@ -118,7 +121,7 @@ const Dialog: React.FC<DialogProps> = (
 
                                                 model.isItemHovered && (
                                                     <Heart
-                                                        onClick={() => addFavorite(model.id)}
+                                                        onClick={(e) =>{ addFavorite(e,model.id)}}
                                                         className={`absolute ${model.isFav ? ' text-orange-500' : 'text-white'} top-2 left-2`}
                                                     />
                                                 )

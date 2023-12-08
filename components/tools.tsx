@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card"
 import { tools } from "@/lib/tools"
 
-
 const Tools = () => {
     return (
         <div className='flex flex-col m-8 gap-6'>
@@ -29,7 +28,7 @@ const Tools = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center w-full gap-5'>
                 {
                     tools.map((tool, i) => (
-                        <Card key={i} className="pb-2 max-h-[460px] max-w-[458px]">
+                        <Card key={i} className="pb-2 max-h-[450px] max-w-[458px]">
                             <CardContent className="p-2">
                                 <Image
                                     src={tool.img}

@@ -2,7 +2,7 @@ export const tools =  [
     {
         img : 'https://cdn1.imagine.art/imagine-frontend/assets/images/TexttoImage.webp',
         p1:'Text to Image',
-        p2:'Transform your words into stunning AI visuals with our text-to-image feature,'
+        p2:'Transform your words into stunning AI visuals.'
     },
     {
         img: 'https://cdn1.imagine.art/imagine-frontend/assets/images/ImageRemix.webp',
@@ -22,6 +22,6 @@ export const tools =  [
     {
         img:'https://cdn1.imagine.art/imagine-frontend/assets/images/BackgroundReplace.webp',
         p1:'Background Replace',
-        p2:'Transform your photos with our AI Background Replace feature to look charm!'
+        p2:'Transform your photos with our AI Background Replace feature.'
     }
 ]
