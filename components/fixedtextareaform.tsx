@@ -128,7 +128,7 @@ export function FixedTextareaForm() {
                         "
                         onClick={generateText}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28" className="text-neutral-900"><path d="m13.998 9.688-1.147 1.952c-.258.43-.043.787.46.787h1.362c.515 0 .719.357.461.788l-1.136 1.952M10.246 24.5a14.012 14.012 0 0 1 7.504 0m-7.719-4.157v-1.218c-2.466-1.46-4.492-4.304-4.492-7.327 0-5.197 4.878-9.27 10.389-8.094 2.423.525 4.546 2.1 5.65 4.272 2.24 4.41-.118 9.091-3.581 11.139v1.217c0 .305.118 1.008-1.03 1.008H11.06c-1.179.01-1.029-.44-1.029-.997Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28" className="dark:text-white text-neutral-900"><path d="m13.998 9.688-1.147 1.952c-.258.43-.043.787.46.787h1.362c.515 0 .719.357.461.788l-1.136 1.952M10.246 24.5a14.012 14.012 0 0 1 7.504 0m-7.719-4.157v-1.218c-2.466-1.46-4.492-4.304-4.492-7.327 0-5.197 4.878-9.27 10.389-8.094 2.423.525 4.546 2.1 5.65 4.272 2.24 4.41-.118 9.091-3.581 11.139v1.217c0 .305.118 1.008-1.03 1.008H11.06c-1.179.01-1.029-.44-1.029-.997Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                     </Button>
                     <Button
                         variant="sky"
