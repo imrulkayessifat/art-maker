@@ -26,7 +26,6 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
     "image/png",
     "image/webp",
 ];
-const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
 const FormSchema = z.object({
     image: z
         .any()
@@ -40,7 +39,6 @@ const FormSchema = z.object({
 });
 
 const ImageInputRemix = () => {
-    const [fileError, setFileError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const setInImageRemix = useImageRemixStore((state) => state.setInImageRemix);
 
