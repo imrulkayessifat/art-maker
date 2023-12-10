@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import axios from 'axios'
 
 import {
     Form,
@@ -21,21 +22,19 @@ const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const FormSchema = z.object({
-    image: z
-        .any()
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-        .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, .jpeg, .png and .webp formats are supported."
-        )
+    image: z.string()
 })
 const ImageInputRemix = () => {
     const [fileError, setFileError] = useState<string | null>(null);
+    const [fileName,setFileName] = useState<string>('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const setInImageRemix = useImageRemixStore((state) => state.setInImageRemix);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
+        defaultValues:{
+            image:''
+        }
     });
 
     const validateFile = (file: File | null) => {
@@ -50,24 +49,24 @@ const ImageInputRemix = () => {
         }
     }
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
         validateFile(file);
         setSelectedFile(file);
-        if(file) {
-            setInImageRemix(file)
-        }
     }
 
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+    const onSubmit = async () => {
+        if(!selectedFile) return
+
+        try {
+            const data = new FormData()
+            data.append(`image`,selectedFile)
+            const res = await axios.post('/api/image',data);
+            console.log(res);
+            setInImageRemix(selectedFile)
+        } catch (e:any) {
+            console.error(e)
+        }
     }
 
     return (
@@ -81,11 +80,11 @@ const ImageInputRemix = () => {
                             <FormControl>
                                 <Input id="picture" type="file" {...field} onChange={handleFileChange} />
                             </FormControl>
-                            {fileError && <FormMessage>{fileError}</FormMessage>}
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
-                {/* <Button type="submit">Send</Button> */}
+                <Button type="submit">Send</Button>
             </form>
         </Form>
     )
