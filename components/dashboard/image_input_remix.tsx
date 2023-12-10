@@ -18,53 +18,50 @@ import { Button } from "@/components/ui/button"
 import { useImageRemixStore } from "@/hooks/image_remix"
 import { toast } from "@/components/ui/use-toast"
 
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
+const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+];
+const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
 const FormSchema = z.object({
-    image: z.string()
-})
+    image: z
+        .any()
+        .refine((files) => {
+            return files?.[0]?.size <= MAX_FILE_SIZE;
+        }, `Max image size is 5MB.`)
+        .refine(
+            (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+            "Only .jpg, .jpeg, .png and .webp formats are supported."
+        ),
+});
+
 const ImageInputRemix = () => {
     const [fileError, setFileError] = useState<string | null>(null);
-    const [fileName,setFileName] = useState<string>('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const setInImageRemix = useImageRemixStore((state) => state.setInImageRemix);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
-        defaultValues:{
-            image:''
+        defaultValues: {
+            image: ''
         }
     });
 
-    const validateFile = (file: File | null) => {
-        if (file) {
-            if (file.size > MAX_FILE_SIZE) {
-                setFileError('Max image size is 5MB.');
-            } else if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-                setFileError('Only .jpg, .jpeg, .png, and .webp formats are supported.');
-            } else {
-                setFileError(null);
-            }
-        }
-    }
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files && e.target.files[0];
-        validateFile(file);
-        setSelectedFile(file);
-    }
-
-    const onSubmit = async () => {
-        if(!selectedFile) return
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        if (!selectedFile) return
 
         try {
             const data = new FormData()
-            data.append(`image`,selectedFile)
-            const res = await axios.post('/api/image',data);
+            data.append(`image`, selectedFile)
+            const res = await axios.post('/api/image', data);
             console.log(res);
             setInImageRemix(selectedFile)
-        } catch (e:any) {
+        } catch (e: any) {
             console.error(e)
         }
     }
@@ -78,7 +75,14 @@ const ImageInputRemix = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Input id="picture" type="file" {...field} onChange={handleFileChange} />
+                                <Input
+                                    id="picture"
+                                    type="file"
+                                    onChange={(e) => {
+                                        field.onChange(e.target.files);
+                                        setSelectedFile(e.target.files?.[0] || null);
+                                    }}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
