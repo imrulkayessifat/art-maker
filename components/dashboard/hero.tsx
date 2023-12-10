@@ -7,19 +7,32 @@ import StepScale from "@/components/dashboard/step_scale"
 import Seed from "@/components/dashboard/seed"
 import { TextBox } from "@/components/dashboard/textbox"
 import RenderImage from "@/components/dashboard/render_image"
+import RenderImageRemix from "@/components/dashboard/render_image_remix"
+import ImageInputRemix from "@/components/dashboard/image_input_remix"
 
 const Hero = () => {
     return (
         <div className='grid grid-cols-6'>
             {/* left */}
-            <div className="col-span-5 h-full border-r-2">
+            <div className="col-span-5 flex justify-around h-full border-r-2">
                 <div className='
                     flex 
                     flex-col 
                     flex-shrink-1
                     items-center 
                     justify-end 
-                    max-h-[550px]
+                    max-h-[470px]
+                '>
+                    <RenderImageRemix />
+                    <ImageInputRemix />
+                </div>
+                <div className='
+                    flex 
+                    flex-col 
+                    flex-shrink-1
+                    items-center 
+                    justify-end 
+                    max-h-[530px]
                 '>
                     <RenderImage />
                     <TextBox />

@@ -14,10 +14,10 @@ const Footer = () => {
 
     useEffect(() => {
         setInViewport(isInViewport);
-    }, [isInViewport]);
+    }, [isInViewport, setInViewport]);
 
     return (
-        <div className="" ref={ref}>
+        <div className="dark:bg-[#020817] bg-white" ref={ref}>
             <div className="hidden lg:flex py-4 justify-between items-center w-full border-t-2">
                 <div className="flex ml-8 items-center justify-between gap-2">
                     <Image

@@ -31,7 +31,7 @@ export default function Landing() {
 
         <Social />
         <Info />
-        <ParticlesBackground />
+        {/* <ParticlesBackground /> */}
     </div>
   )
 }

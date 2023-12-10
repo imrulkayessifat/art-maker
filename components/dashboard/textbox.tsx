@@ -14,7 +14,6 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
 import useIsInViewport from '@/hooks/useIsInViewport';
 import { useViewportStore } from '@/hooks/store';
 import { useImageStore } from '@/hooks/image';
@@ -59,7 +58,7 @@ export function TextBox() {
     useEffect(() => {
         setInViewport(isInViewPort);
         setInImage(image);
-    }, [isInViewPort,image]);
+    }, [isInViewPort, image, setInViewport, setInImage]);
 
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -79,7 +78,7 @@ export function TextBox() {
                     ref={ref}
                     onSubmit={form.handleSubmit(onSubmit)}
                     className={`
-                    w-2/3  
+                    w-5/6  
                     space-y-6 
                     mt-9 
                     relative 
@@ -92,7 +91,7 @@ export function TextBox() {
                             <FormItem className="flex-grow">
                                 <FormControl>
                                     <Textarea
-                                        placeholder="brown elk in a forest meadow minimal ink doodle art"
+                                        placeholder="demo text"
                                         className={`
                                         resize-none 
                                         w-full 
