@@ -51,17 +51,17 @@ const ImageInputRemix = () => {
 
 
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-        if (!selectedFile) return
+        // if (!selectedFile) return
 
-        try {
-            const data = new FormData()
-            data.append(`image`, selectedFile)
-            const res = await axios.post('/api/image', data);
-            console.log(res);
-            setInImageRemix(selectedFile)
-        } catch (e: any) {
-            console.error(e)
-        }
+        // try {
+        //     const data = new FormData()
+        //     data.append(`image`, selectedFile)
+        //     const res = await axios.post('/api/image', data);
+        //     console.log(res);
+        //     setInImageRemix(selectedFile)
+        // } catch (e: any) {
+        //     console.error(e)
+        // }
     }
 
     return (
@@ -80,9 +80,14 @@ const ImageInputRemix = () => {
                                         field.onChange(e.target.files);
                                         setSelectedFile(e.target.files?.[0] || null);
                                         const file = e.target.files && e.target.files[0];
-                                        if(file) {
-                                            setInImageRemix(file);
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = () => {
+                                                setInImageRemix(reader.result);
+                                            };
+                                            reader.readAsDataURL(file);
                                         }
+
                                     }}
                                 />
                             </FormControl>

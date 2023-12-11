@@ -30,7 +30,7 @@ const RenderImageRemix = () => {
                         className='relative mt-14'>
                         <ReactCrop crop={crop} onChange={c => setCrop(c)}>
                             <Image
-                                src={`/${isInImageRemix.name}` || '/rose.png'}
+                                src={`${isInImageRemix}` || '/rose.png'}
                                 alt={''}
                                 width={"350"}
                                 height={"350"}
