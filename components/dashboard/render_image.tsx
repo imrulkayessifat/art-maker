@@ -28,6 +28,10 @@ const RenderImage = () => {
                             width={"350"}
                             height={"350"}
                             className='rounded'
+                            style={{
+                                width:"350px",
+                                height:"350px"
+                            }}
                         />
                         {isHovered &&
                             <div

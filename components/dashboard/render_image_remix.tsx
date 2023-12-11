@@ -27,14 +27,18 @@ const RenderImageRemix = () => {
                     <div
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
-                        className='relative mt-10'>
+                        className='relative mt-14'>
                         <ReactCrop crop={crop} onChange={c => setCrop(c)}>
                             <Image
                                 src={`/${isInImageRemix.name}` || '/rose.png'}
                                 alt={''}
                                 width={"350"}
                                 height={"350"}
-                                className='rounded cursor-pointer'
+                                className='rounded '
+                                style={{
+                                    width:"350px",
+                                    height:"350px"
+                                }}
                             />
                         </ReactCrop>
                         {isHovered &&

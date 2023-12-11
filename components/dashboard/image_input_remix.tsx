@@ -79,6 +79,10 @@ const ImageInputRemix = () => {
                                     onChange={(e) => {
                                         field.onChange(e.target.files);
                                         setSelectedFile(e.target.files?.[0] || null);
+                                        const file = e.target.files && e.target.files[0];
+                                        if(file) {
+                                            setInImageRemix(file);
+                                        }
                                     }}
                                 />
                             </FormControl>
@@ -86,7 +90,7 @@ const ImageInputRemix = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Send</Button>
+                {/* <Button type="submit">Send</Button> */}
             </form>
         </Form>
     )

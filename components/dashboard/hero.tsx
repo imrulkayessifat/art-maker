@@ -15,27 +15,28 @@ const Hero = () => {
         <div className='grid grid-cols-6'>
             {/* left */}
             <div className="col-span-5 flex justify-around h-full border-r-2">
-                <div className='
+                <div className="flex justify-evenly max-h-[500px]  w-full">
+                    <div className='
                     flex 
                     flex-col 
                     flex-shrink-1
                     items-center 
                     justify-end 
-                    max-h-[470px]
-                '>
-                    <RenderImageRemix />
-                    <ImageInputRemix />
-                </div>
-                <div className='
+                    
+                    '>
+                        <RenderImageRemix />
+                        <ImageInputRemix />
+                    </div>
+                    <div className='
                     flex 
                     flex-col 
                     flex-shrink-1
                     items-center 
                     justify-end 
-                    max-h-[530px]
                 '>
-                    <RenderImage />
-                    <TextBox />
+                        <RenderImage />
+                        <TextBox />
+                    </div>
                 </div>
             </div>
             <div className='col-span-1 overflow-auto'>
