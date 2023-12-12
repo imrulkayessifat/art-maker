@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -49,7 +50,9 @@ const Tools = () => {
                                         {tool.p2}
                                     </p>
                                 </div>
-                                <Button variant={"sky"}>Generate</Button>
+                                <Link href={tool.href}>
+                                    <Button variant={"sky"}>Generate</Button>
+                                </Link>
                             </CardFooter>
                         </Card>
                     ))

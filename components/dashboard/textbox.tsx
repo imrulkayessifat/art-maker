@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { motion } from 'framer-motion';
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -82,6 +83,8 @@ export function TextBox() {
                     space-y-6 
                     mt-9 
                     relative 
+                    
+                    z-10
                 `}
                 >
                     <FormField

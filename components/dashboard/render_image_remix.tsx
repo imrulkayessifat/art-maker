@@ -1,16 +1,13 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Image from 'next/image'
-import ReactCrop, { type Crop } from 'react-image-crop'
 
-import 'react-image-crop/dist/ReactCrop.css'
 import { useImageRemixStore } from '@/hooks/image_remix'
 
 const RenderImageRemix = () => {
     const isInImageRemix = useImageRemixStore((state) => state.isInImageRemix)
     const [isHovered, setIsHovered] = useState(false);
-    const [crop, setCrop] = useState<Crop>()
 
     const handleMouseEnter = () => {
         setIsHovered(true);
@@ -28,19 +25,18 @@ const RenderImageRemix = () => {
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         className='relative mt-14'>
-                        <ReactCrop crop={crop} onChange={c => setCrop(c)}>
-                            <Image
-                                src={`${isInImageRemix}` || '/rose.png'}
-                                alt={''}
-                                width={"350"}
-                                height={"350"}
-                                className='rounded '
-                                style={{
-                                    width:"350px",
-                                    height:"350px"
-                                }}
-                            />
-                        </ReactCrop>
+                        
+                                <Image
+                                    src={`${isInImageRemix}` || '/rose.png'}
+                                    alt={''}
+                                    className='rounded '
+                                    style={{
+                                        width: "350px",
+                                        height: "350px"
+                                    }}
+                                />
+                                
+                            
                         {isHovered &&
                             <div
                                 className='absolute bg-black bg-opacity-40 rounded flex flex-col justify-around gap-2 p-2 right-2 top-2'>

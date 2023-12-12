@@ -3,14 +3,13 @@ import Link from "next/link"
 
 import Hero from "@/components/dashboard/hero"
 import Navbar from "@/components/dashboard/navbar"
-import TextToImage from "@/components/dashboard/text_to_image"
-
+import ImageRemix from "@/components/dashboard/image_remix"
 export default function Home() {
   return (
     <div className="flex flex-col w-full max-h-screen transition-all duration-500">
       <div className="hidden md:block">
         <Navbar />
-        <Hero HeroLeft={<TextToImage />} />
+        <Hero HeroLeft={<ImageRemix />} />
       </div>
       <div className="flex flex-col gap-3 w-full h-screen items-center justify-center md:hidden">
         <Image
