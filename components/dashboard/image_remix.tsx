@@ -3,7 +3,6 @@ import React from 'react'
 import ImageInputRemix from '@/components/dashboard/image_input_remix'
 import RenderImageRemix from '@/components/dashboard/render_image_remix'
 
-
 const ImageRemix = () => {
     return (
         <div className='

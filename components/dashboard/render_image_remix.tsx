@@ -1,14 +1,14 @@
 "use client"
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-
 import { useImageRemixStore } from '@/hooks/image_remix'
+import ImagePainter from './image/ImagePainter'
 
 const RenderImageRemix = () => {
     const isInImageRemix = useImageRemixStore((state) => state.isInImageRemix)
     const [isHovered, setIsHovered] = useState(false);
-
+    
     const handleMouseEnter = () => {
         setIsHovered(true);
     };
@@ -25,45 +25,20 @@ const RenderImageRemix = () => {
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         className='relative mt-14'>
-                        
-                                <Image
-                                    src={`${isInImageRemix}` || '/rose.png'}
-                                    alt={''}
-                                    className='rounded '
-                                    style={{
-                                        width: "350px",
-                                        height: "350px"
-                                    }}
-                                />
-                                
-                            
-                        {isHovered &&
-                            <div
-                                className='absolute bg-black bg-opacity-40 rounded flex flex-col justify-around gap-2 p-2 right-2 top-2'>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded p-1'>
-                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="stroke-[1.5] text-sky-500"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M12.148 5v10.976M16.223 11.586l-4.073 4.39-4.072-4.39"></path><path stroke="currentColor" strokeLinecap="round" d="M4 20h16"></path></svg>
-                                </div>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded-t border-b-2 border-slate-700	p-1'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" className="stroke-[1.5] text-sky-500" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="m10 14-5 5m0 0h4m-4 0v-4.007M10 10 5 5m0 0h4M5 5v4.007M14 10l5-5m0 0h-4m4 0v4.007M14 14l5 5m0 0h-4m4 0v-4.007"></path></svg>
-                                </div>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded p-1'>
-                                    <svg className="stroke-[1.5] text-sky-500 hover:text-red-500" width="24" height="24" fill="none" ><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M4 6.6h16m-1.778 0v12.6c0 .9-.889 1.8-1.778 1.8H7.556c-.89 0-1.778-.9-1.778-1.8V6.6m2.666 0V4.8c0-.9.89-1.8 1.778-1.8h3.556c.889 0 1.778.9 1.778 1.8v1.8"></path></svg>
-                                </div>
-                            </div>
-                        }
 
-                        {
-                            isHovered &&
-                            <div
-                                className='absolute bg-black bg-opacity-40 rounded flex flex-col justify-around gap-2 p-2 right-2 bottom-2'>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded p-1'>
-                                    <svg className="stroke-[1.5] text-sky-500" width="24" height="24" fill="none"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M9.3 10.202a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z"></path><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M12.9 3H9.3C4.8 3 3 4.8 3 9.3v5.4C3 19.2 4.8 21 9.3 21h5.4c4.5 0 6.3-1.8 6.3-6.3v-4.5"></path><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M18.18 7.88v-5.4l1.8 1.8M18.183 2.48l-1.8 1.8M3.602 18.257l4.437-2.979c.71-.477 1.737-.423 2.376.126l.297.261c.702.603 1.836.603 2.538 0l3.744-3.213c.702-.603 1.836-.603 2.538 0l1.467 1.26"></path></svg>
-                                </div>
-                                <div className='cursor-pointer hover:bg-neutral-300 rounded	p-1'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20" className="h-6 w-6 stroke-[1.5] text-sky-500"><path d="M2.984 4.3h11.534c1.383 0 2.5 1.117 2.5 2.5v2.767" stroke="currentColor" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="M5.618 1.668 2.984 4.301l2.634 2.634M17.018 15.7H5.484a2.497 2.497 0 0 1-2.5-2.5v-2.766" stroke="currentColor" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m14.383 18.333 2.633-2.633-2.633-2.634" stroke="currentColor" strokeWidth="1.5" stroke-miterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </div>
-                            </div>
-                        }
+                        <ImagePainter imageBuffer={isInImageRemix} />
+                        {/* <Image
+                            src={`${isInImageRemix}` || '/rose.png'}
+                            alt={''}
+                            className='rounded '
+                            width={'350'}
+                            height={"350"}
+                            style={{
+                                width: "350px",
+                                height: "350px"
+                            }}
+                        /> */}
+
                     </div>
                 ) : (
 
