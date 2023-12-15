@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, MouseEvent, useCallback } from 'react';
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import { MdDraw } from "react-icons/md";
+import { MdDraw, MdOutlineDisabledByDefault } from "react-icons/md";
 import { FaPaintBrush } from "react-icons/fa";
 import { IoArrowUndoCircleOutline } from "react-icons/io5";
 
@@ -9,7 +9,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 interface ImagePainterProps {
@@ -47,12 +46,17 @@ const icons: IconsProps[] = [
     react_icons: <IoArrowUndoCircleOutline className="w-8 h-8 cursor-pointer" />,
     content: 'Undo',
     canvasClick: 'undo'
+  },
+  {
+    react_icons: <MdOutlineDisabledByDefault className="w-8 h-8 cursor-pointer" />,
+    content: 'Default',
+    canvasClick: 'default'
   }
 ]
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [canvasFunctionality, setCanvasFunctionality] = useState<string>('');
+  const [canvasFunctionality, setCanvasFunctionality] = useState<string>('default');
   const [isPainting, setIsPainting] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
 
@@ -62,7 +66,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   `;
 
   const base64Image = btoa(svgImage);
-  console.log(base64Image)
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imageBuffer) {
@@ -180,10 +184,28 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
         ref={canvasRef}
         width={350}
         height={350}
-        onMouseDown={startPaint}
-        onMouseUp={endPaint}
-        onMouseMove={paint}
-        className={`${isPainting ? 'custom-cursor' : 'cursor-pointer'} `}
+        onMouseDown={(event) => {
+          if (canvasFunctionality === 'draw') {
+            startPaint(event);
+          }
+        }}
+        onMouseUp={(event) => {
+          if (canvasFunctionality === 'draw') {
+            endPaint();
+          }
+        }}
+        onMouseMove={(event) => {
+          if (canvasFunctionality === 'draw') {
+            paint(event);
+          }
+        }}
+        className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
+          canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
+            canvasFunctionality === 'draw' ? 'custom-cursor' :
+              canvasFunctionality === 'brush' ? 'cursor-move' :
+                canvasFunctionality === 'undo' ? 'cursor-alias' :
+                  'cursor-pointer'}`
+        }
       />
     </div>
   );
