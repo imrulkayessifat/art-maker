@@ -8,6 +8,14 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isPainting, setIsPainting] = useState<boolean>(false);
 
+  const svgImage = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" fill="white"/>
+  </svg>
+  `;
+
+  const base64Image = btoa(svgImage);
+  console.log(base64Image);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imageBuffer) {
@@ -68,6 +76,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    ctx.strokeStyle = 'white'; // Set the paint color to white
+    ctx.lineWidth = 5;
+
     ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
   };
@@ -79,11 +90,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   return (
     <canvas
       ref={canvasRef}
-      width={350} 
+      width={350}
       height={350}
       onMouseDown={startPaint}
       onMouseUp={endPaint}
       onMouseMove={paint}
+      className='custom-cursor'
     />
   );
 };
