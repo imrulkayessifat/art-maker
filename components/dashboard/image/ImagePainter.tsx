@@ -21,6 +21,11 @@ interface IconsProps {
   canvasClick: string;
 }
 
+interface ScaleOffset {
+  x: number;
+  y: number;
+}
+
 const icons: IconsProps[] = [
   {
     react_icons: <CiSquarePlus className="w-8 h-8 cursor-pointer" />,
@@ -67,22 +72,40 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const base64Image = btoa(svgImage);
 
+  const maxScale = 1.5;
+  const minScale = 1;
+
+  const handleZoomIn = () => {
+    setScale((prevScale) => {
+      const newScale = prevScale + 0.1;
+      return newScale <= maxScale ? newScale : prevScale;
+    });
+  };
+
+  const handleZoomOut = () => {
+    setScale((prevScale) => {
+      const newScale = prevScale - 0.1;
+      return newScale >= minScale ? newScale : prevScale;
+    });
+  };
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imageBuffer) {
       console.error('Canvas or image buffer not available.');
       return;
     }
-
+  
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('Canvas context not available.');
       return;
     }
-
+  
     const drawImage = (src: string) => {
       const image = new Image();
       image.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
       };
       image.onerror = (error) => {
@@ -90,7 +113,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       };
       image.src = src;
     };
-
+  
     if (typeof imageBuffer === 'string') {
       drawImage(imageBuffer);
     } else if (imageBuffer instanceof ArrayBuffer) {
@@ -101,16 +124,10 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     } else {
       console.error('Invalid imageBuffer type.');
     }
-    ctx.scale(scale, scale);
+  
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  
   }, [imageBuffer, scale]);
-
-  const handleZoomIn = useCallback(() => {
-    setScale(scale + 0.1);
-  }, [scale])
-
-  const handleZoomOut = useCallback(() => {
-    setScale(scale - 0.1);
-  }, [scale]);
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
@@ -142,7 +159,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.strokeStyle = 'white'; // Set the paint color to white
+    ctx.strokeStyle = 'white';
     ctx.lineWidth = 6;
 
     ctx.lineTo(startingX, startingY);
@@ -187,6 +204,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
         onMouseDown={(event) => {
           if (canvasFunctionality === 'draw') {
             startPaint(event);
+          }
+          else if (canvasFunctionality === 'zoomin') {
+            handleZoomIn();
+          }
+          else if (canvasFunctionality === 'zoomout') {
+            handleZoomOut();
           }
         }}
         onMouseUp={(event) => {
