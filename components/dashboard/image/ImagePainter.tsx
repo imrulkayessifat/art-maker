@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect, MouseEvent, useCallback } from 'react';
-import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import { MdDraw, MdOutlineDisabledByDefault } from "react-icons/md";
+import React, { useState, useRef, useEffect, MouseEvent } from 'react';
+import { CiSquarePlus, CiSquareMinus, CiSettings } from "react-icons/ci";
+import { MdDraw } from "react-icons/md";
 import { FaPaintBrush } from "react-icons/fa";
 import { IoArrowUndoCircleOutline } from "react-icons/io5";
+import { TbDragDrop2 } from "react-icons/tb";
 
 import {
   HoverCard,
@@ -53,7 +54,12 @@ const icons: IconsProps[] = [
     canvasClick: 'undo'
   },
   {
-    react_icons: <MdOutlineDisabledByDefault className="w-8 h-8 cursor-pointer" />,
+    react_icons: <TbDragDrop2 className="w-8 h-8 cursor-pointer" />,
+    content: 'Drag',
+    canvasClick: 'drag'
+  },
+  {
+    react_icons: <CiSettings className="w-8 h-8 cursor-pointer" />,
     content: 'Default',
     canvasClick: 'default'
   }
@@ -65,6 +71,10 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [isPainting, setIsPainting] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
 
+  const [panOffset, setPanOffset] = useState<ScaleOffset>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
   const svgImage = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="12" cy="12" r="5" fill="white"/>
   </svg>
@@ -72,36 +82,36 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const base64Image = btoa(svgImage);
 
-  const maxScale = 1.5;
+  const maxScale = 1.4;
   const minScale = 1;
 
   const handleZoomIn = () => {
     setScale((prevScale) => {
-      const newScale = prevScale + 0.1;
+      const newScale = parseFloat((prevScale + 0.1).toFixed(2));
       return newScale <= maxScale ? newScale : prevScale;
     });
   };
 
   const handleZoomOut = () => {
     setScale((prevScale) => {
-      const newScale = prevScale - 0.1;
+      const newScale = parseFloat((prevScale - 0.1).toFixed(2));
       return newScale >= minScale ? newScale : prevScale;
     });
   };
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imageBuffer) {
       console.error('Canvas or image buffer not available.');
       return;
     }
-  
+
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('Canvas context not available.');
       return;
     }
-  
+
     const drawImage = (src: string) => {
       const image = new Image();
       image.onload = () => {
@@ -113,7 +123,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       };
       image.src = src;
     };
-  
+
     if (typeof imageBuffer === 'string') {
       drawImage(imageBuffer);
     } else if (imageBuffer instanceof ArrayBuffer) {
@@ -124,19 +134,22 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     } else {
       console.error('Invalid imageBuffer type.');
     }
-  
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  
-  }, [imageBuffer, scale]);
+
+    ctx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
+
+  }, [imageBuffer, scale,panOffset]);
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
-    const { offsetX, offsetY } = event.nativeEvent;
-    const startingX = offsetX + cursorSize / 2;
-    const startingY = offsetY + cursorSize / 2;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    const scaledOffsetX = offsetX / scale;
+    const scaledOffsetY = offsetY / scale;
+
+    const startingX = scaledOffsetX + cursorSize / 2;
+    const startingY = scaledOffsetY + cursorSize / 2;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -149,18 +162,22 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const paint = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isPainting) return;
 
-    const cursorSize = 24;
-    const { offsetX, offsetY } = event.nativeEvent;
-    const startingX = offsetX + cursorSize / 2;
-    const startingY = offsetY + cursorSize / 2;
+    const cursorSize = 21;
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    const scaledOffsetX = offsetX / scale;
+    const scaledOffsetY = offsetY / scale;
+
+    const startingX = scaledOffsetX + cursorSize / 2;
+    const startingY = scaledOffsetY + cursorSize / 2;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     ctx.strokeStyle = 'white';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 5;
 
     ctx.lineTo(startingX, startingY);
     ctx.stroke();
@@ -211,22 +228,42 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
           else if (canvasFunctionality === 'zoomout') {
             handleZoomOut();
           }
+          else if (canvasFunctionality === 'drag') {
+            setIsDragging(true);
+            lastPos.current = { x: event.clientX, y: event.clientY };
+          }
         }}
         onMouseUp={(event) => {
           if (canvasFunctionality === 'draw') {
             endPaint();
           }
+          else if (isDragging && canvasFunctionality === 'drag') {
+            setIsDragging(false);
+          }
+          
         }}
         onMouseMove={(event) => {
           if (canvasFunctionality === 'draw') {
             paint(event);
           }
+          else if (isDragging && canvasFunctionality === 'drag') {
+            const deltaX = event.clientX - lastPos.current.x;
+            const deltaY = event.clientY - lastPos.current.y;
+        
+            setPanOffset((prevOffset) => ({
+              x: prevOffset.x + deltaX / scale,
+              y: prevOffset.y + deltaY / scale,
+            }));
+        
+            lastPos.current = { x: event.clientX, y: event.clientY };
+          }
         }}
         className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
           canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
             canvasFunctionality === 'draw' ? 'custom-cursor' :
-              canvasFunctionality === 'brush' ? 'cursor-move' :
+              canvasFunctionality === 'brush' ? 'cursor-context-menu' :
                 canvasFunctionality === 'undo' ? 'cursor-alias' :
+                canvasFunctionality === 'drag' ? 'cursor-move' :
                   'cursor-pointer'}`
         }
       />
