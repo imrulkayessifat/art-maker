@@ -166,7 +166,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     ctx.stroke();
   };
 
-  
 
   const paint = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isPainting) return;
@@ -191,9 +190,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     } else if (isPainting && canvasFunctionality === 'brush') {
       ctx.globalCompositeOperation = 'destination-out';
     }
-
-    console.log(canvasFunctionality)
-
   };
 
   const endPaint = () => {
