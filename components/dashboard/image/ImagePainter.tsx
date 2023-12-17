@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, MouseEvent } from 'react';
 import { CiSquarePlus, CiSquareMinus, CiSettings } from "react-icons/ci";
 import { MdDraw } from "react-icons/md";
-import { FaPaintBrush } from "react-icons/fa";
+import { FaEraser } from "react-icons/fa6";
 import { IoArrowUndoCircleOutline } from "react-icons/io5";
 import { TbDragDrop2 } from "react-icons/tb";
 
@@ -44,9 +44,9 @@ const icons: IconsProps[] = [
     canvasClick: 'draw'
   },
   {
-    react_icons: <FaPaintBrush className="w-7 h-7 cursor-pointer" />,
-    content: 'Brush',
-    canvasClick: 'brush'
+    react_icons: <FaEraser className="w-7 h-7 cursor-pointer" />,
+    content: 'Eraser',
+    canvasClick: 'eraser'
   },
   {
     react_icons: <IoArrowUndoCircleOutline className="w-8 h-8 cursor-pointer" />,
@@ -77,12 +77,21 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const svgImage = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  const svgDraw = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="12" cy="12" r="5" fill="white"/>
   </svg>
   `;
 
-  const base64Image = btoa(svgImage);
+  const base64Draw = btoa(svgDraw);
+
+  const svgEraser = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="5" stroke="black"/>
+  </svg>
+  `;
+
+  const base64Eraser = btoa(svgEraser);
+
+  console.log(base64Eraser)
 
   const maxScale = 1.4;
   const minScale = 1;
@@ -245,7 +254,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   };
 
   return (
-    <div className='relative'>
+    <>
       <div className='flex justify-start gap-2 pb-1'>
         {
           icons.map((icon, i) => (
@@ -271,80 +280,80 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
           ))
         }
       </div>
-      <div className='absolute top-[200px] left-100 z-2'>
-        <canvas
-          ref={canvasRef}
-          width={350}
-          height={350}
-        />
+      <div className='relative'>
+        <div className='absolute top-[150px] left-0 z-2'>
+          <canvas
+            ref={canvasRef}
+            width={350}
+            height={350}
+          />
+        </div>
+        <div className='absolute top-[150px] left-0 z-10'>
+          <canvas
+            ref={transparentCanvasRef}
+            width={350}
+            height={350}
+            onMouseDown={(event) => {
+              if (canvasFunctionality === 'draw') {
+                startPaint(event);
+              }
+              else if (canvasFunctionality === 'eraser') {
+                startErase(event)
+              }
+              else if (canvasFunctionality === 'zoomin') {
+                handleZoomIn();
+              }
+              else if (canvasFunctionality === 'zoomout') {
+                handleZoomOut();
+              }
+              else if (canvasFunctionality === 'drag') {
+                setIsDragging(true);
+                lastPos.current = { x: event.clientX, y: event.clientY };
+              }
+            }}
+            onMouseUp={(event) => {
+              if (canvasFunctionality === 'draw') {
+                endPaint();
+              }
+              else if (canvasFunctionality === 'eraser') {
+                endErase();
+              }
+              else if (isDragging && canvasFunctionality === 'drag') {
+                setIsDragging(false);
+              }
+            }}
+            onMouseMove={(event) => {
+              if (canvasFunctionality === 'draw') {
+                paint(event);
+              }
+              else if (canvasFunctionality === 'eraser') {
+                erase(event);
+              }
+              else if (isDragging && canvasFunctionality === 'drag') {
+                const deltaX = event.clientX - lastPos.current.x;
+                const deltaY = event.clientY - lastPos.current.y;
+
+                setPanOffset((prevOffset) => ({
+                  x: prevOffset.x + deltaX / scale,
+                  y: prevOffset.y + deltaY / scale,
+                }));
+
+                lastPos.current = { x: event.clientX, y: event.clientY };
+              }
+
+            }}
+            className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
+              canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
+                canvasFunctionality === 'draw' ? 'custom-draw' :
+                  canvasFunctionality === 'eraser' ? 'custom-eraser' :
+                    canvasFunctionality === 'undo' ? 'cursor-alias' :
+                      canvasFunctionality === 'drag' ? 'cursor-move' :
+                        'cursor-pointer'} `
+            }
+          />
+        </div>
       </div>
-      <div className='absolute top-[200px] left-50 z-10'>
-        <canvas
-          ref={transparentCanvasRef}
-          width={350}
-          height={350}
-          onMouseDown={(event) => {
-            if (canvasFunctionality === 'draw') {
-              startPaint(event);
-            }
-            else if (canvasFunctionality === 'brush') {
-              startErase(event)
-            }
-            else if (canvasFunctionality === 'zoomin') {
-              handleZoomIn();
-            }
-            else if (canvasFunctionality === 'zoomout') {
-              handleZoomOut();
-            }
-            else if (canvasFunctionality === 'drag') {
-              setIsDragging(true);
-              lastPos.current = { x: event.clientX, y: event.clientY };
-            }
-          }}
-          onMouseUp={(event) => {
-            if (canvasFunctionality === 'draw') {
-              endPaint();
-            }
-            else if (canvasFunctionality === 'brush') {
-              endErase();
-            }
-            else if (isDragging && canvasFunctionality === 'drag') {
-              setIsDragging(false);
-            }
-
-          }}
-          onMouseMove={(event) => {
-            if (canvasFunctionality === 'draw') {
-              paint(event);
-            }
-            else if (canvasFunctionality === 'brush') {
-              erase(event);
-            }
-            else if (isDragging && canvasFunctionality === 'drag') {
-              const deltaX = event.clientX - lastPos.current.x;
-              const deltaY = event.clientY - lastPos.current.y;
-
-              setPanOffset((prevOffset) => ({
-                x: prevOffset.x + deltaX / scale,
-                y: prevOffset.y + deltaY / scale,
-              }));
-
-              lastPos.current = { x: event.clientX, y: event.clientY };
-            }
-
-          }}
-          className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
-            canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
-              canvasFunctionality === 'draw' ? 'custom-cursor' :
-                canvasFunctionality === 'brush' ? 'custom-cursor' :
-                  canvasFunctionality === 'undo' ? 'cursor-alias' :
-                    canvasFunctionality === 'drag' ? 'cursor-move' :
-                      'cursor-pointer'} `
-          }
-        />
-      </div>
-
-    </div>
+    </>
   );
 };
 

@@ -24,7 +24,7 @@ const RenderImageRemix = () => {
                     <div
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
-                        className='relative mt-14'>
+                        className='mt-14 h-full'>
 
                         <ImagePainter imageBuffer={isInImageRemix} />
                         {/* <Image
