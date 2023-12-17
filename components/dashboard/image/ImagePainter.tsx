@@ -67,8 +67,10 @@ const icons: IconsProps[] = [
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasFunctionality, setCanvasFunctionality] = useState<string>('default');
   const [isPainting, setIsPainting] = useState<boolean>(false);
+  const [isErasing, setIsErasing] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
 
   const [panOffset, setPanOffset] = useState<ScaleOffset>({ x: 0, y: 0 });
@@ -159,19 +161,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     setIsPainting(true);
   };
 
-  const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 5;
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  };
-
-
-  const paint = (event: MouseEvent<HTMLCanvasElement>) => {
-    if (!isPainting) return;
-
-    const cursorSize = 21;
-    const canvas = canvasRef.current;
+  const startErase = (event: MouseEvent<HTMLCanvasElement>) => {
+    const cursorSize = 24;
+    const canvas = transparentCanvasRef.current;
     if (!canvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
@@ -184,20 +176,76 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    if (isPainting && canvasFunctionality === 'draw') {
-      ctx.globalCompositeOperation = 'source-over';
-      draw(ctx, startingX, startingY);
-    } else if (isPainting && canvasFunctionality === 'brush') {
-      ctx.globalCompositeOperation = 'destination-out';
-    }
+    ctx.beginPath();
+    ctx.moveTo(startingX, startingY);
+    setIsErasing(true);
+  };
+
+  const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+  const eraser = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  };
+
+  const paint = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (!isPainting) return;
+
+    const cursorSize = 21;
+    const canvas = transparentCanvasRef.current;
+    if (!canvas) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    const scaledOffsetX = offsetX / scale;
+    const scaledOffsetY = offsetY / scale;
+
+    const startingX = scaledOffsetX + cursorSize / 2;
+    const startingY = scaledOffsetY + cursorSize / 2;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+    ctx.lineWidth = 5;
+    draw(ctx, startingX, startingY);
+
+  };
+
+  const erase = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (!isErasing) return;
+
+    const cursorSize = 21;
+    const canvas = transparentCanvasRef.current;
+    if (!canvas) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    const scaledOffsetX = offsetX / scale;
+    const scaledOffsetY = offsetY / scale;
+
+    const startingX = scaledOffsetX + cursorSize / 2;
+    const startingY = scaledOffsetY + cursorSize / 2;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0)';
+    ctx.lineWidth = 5;
+    eraser(ctx, startingX, startingY)
+
   };
 
   const endPaint = () => {
     setIsPainting(false);
   };
 
+  const endErase = () => {
+    setIsErasing(false);
+  };
+
   return (
-    <div>
+    <div className='relative'>
       <div className='flex justify-start gap-2 pb-1'>
         {
           icons.map((icon, i) => (
@@ -223,60 +271,79 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
           ))
         }
       </div>
-      <canvas
-        ref={canvasRef}
-        width={350}
-        height={350}
-        onMouseDown={(event) => {
-          if (canvasFunctionality === 'draw' || canvasFunctionality === 'brush') {
-            startPaint(event);
-          }
-          else if (canvasFunctionality === 'zoomin') {
-            handleZoomIn();
-          }
-          else if (canvasFunctionality === 'zoomout') {
-            handleZoomOut();
-          }
-          else if (canvasFunctionality === 'drag') {
-            setIsDragging(true);
-            lastPos.current = { x: event.clientX, y: event.clientY };
-          }
-        }}
-        onMouseUp={(event) => {
-          if (canvasFunctionality === 'draw') {
-            endPaint();
-          }
-          else if (isDragging && canvasFunctionality === 'drag') {
-            setIsDragging(false);
-          }
+      <div className='absolute top-[200px] left-100 z-2'>
+        <canvas
+          ref={canvasRef}
+          width={350}
+          height={350}
+        />
+      </div>
+      <div className='absolute top-[200px] left-50 z-10'>
+        <canvas
+          ref={transparentCanvasRef}
+          width={350}
+          height={350}
+          onMouseDown={(event) => {
+            if (canvasFunctionality === 'draw') {
+              startPaint(event);
+            }
+            else if (canvasFunctionality === 'brush') {
+              startErase(event)
+            }
+            else if (canvasFunctionality === 'zoomin') {
+              handleZoomIn();
+            }
+            else if (canvasFunctionality === 'zoomout') {
+              handleZoomOut();
+            }
+            else if (canvasFunctionality === 'drag') {
+              setIsDragging(true);
+              lastPos.current = { x: event.clientX, y: event.clientY };
+            }
+          }}
+          onMouseUp={(event) => {
+            if (canvasFunctionality === 'draw') {
+              endPaint();
+            }
+            else if (canvasFunctionality === 'brush') {
+              endErase();
+            }
+            else if (isDragging && canvasFunctionality === 'drag') {
+              setIsDragging(false);
+            }
 
-        }}
-        onMouseMove={(event) => {
-          if (canvasFunctionality === 'draw' || canvasFunctionality === 'brush') {
-            paint(event);
+          }}
+          onMouseMove={(event) => {
+            if (canvasFunctionality === 'draw') {
+              paint(event);
+            }
+            else if (canvasFunctionality === 'brush') {
+              erase(event);
+            }
+            else if (isDragging && canvasFunctionality === 'drag') {
+              const deltaX = event.clientX - lastPos.current.x;
+              const deltaY = event.clientY - lastPos.current.y;
+
+              setPanOffset((prevOffset) => ({
+                x: prevOffset.x + deltaX / scale,
+                y: prevOffset.y + deltaY / scale,
+              }));
+
+              lastPos.current = { x: event.clientX, y: event.clientY };
+            }
+
+          }}
+          className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
+            canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
+              canvasFunctionality === 'draw' ? 'custom-cursor' :
+                canvasFunctionality === 'brush' ? 'custom-cursor' :
+                  canvasFunctionality === 'undo' ? 'cursor-alias' :
+                    canvasFunctionality === 'drag' ? 'cursor-move' :
+                      'cursor-pointer'} `
           }
-          else if (isDragging && canvasFunctionality === 'drag') {
-            const deltaX = event.clientX - lastPos.current.x;
-            const deltaY = event.clientY - lastPos.current.y;
+        />
+      </div>
 
-            setPanOffset((prevOffset) => ({
-              x: prevOffset.x + deltaX / scale,
-              y: prevOffset.y + deltaY / scale,
-            }));
-
-            lastPos.current = { x: event.clientX, y: event.clientY };
-          }
-
-        }}
-        className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
-          canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
-            canvasFunctionality === 'draw' ? 'custom-cursor' :
-              canvasFunctionality === 'brush' ? 'cursor-context-menu' :
-                canvasFunctionality === 'undo' ? 'cursor-alias' :
-                  canvasFunctionality === 'drag' ? 'cursor-move' :
-                    'cursor-pointer'}`
-        }
-      />
     </div>
   );
 };
