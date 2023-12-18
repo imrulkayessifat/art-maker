@@ -97,7 +97,6 @@ const Dialog: React.FC<DialogProps> = (
                     <div className="grid grid-cols-3 gap-2 m-5 w-full items-center justify-between">
                         {
                             modelData.map((model, i) => {
-                                console.log(model.isFav)
                                 return (
                                     <CommandItem
                                         key={i}

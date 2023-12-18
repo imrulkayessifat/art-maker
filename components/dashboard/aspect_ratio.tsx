@@ -45,7 +45,7 @@ const AspectRatio = () => {
         }
     })
 
-    console.log(form.watch("data"))
+    // console.log(form.watch("data"))
     return (
         <Accordion type="single" collapsible className="w-full my-3">
             <AccordionItem value="item-1">

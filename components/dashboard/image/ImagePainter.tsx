@@ -91,7 +91,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const base64Eraser = btoa(svgEraser);
 
-  console.log(base64Eraser)
 
   const maxScale = 1.4;
   const minScale = 1;
@@ -152,7 +151,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
-    const canvas = canvasRef.current;
+    const canvas = transparentCanvasRef.current;
     if (!canvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
@@ -170,37 +169,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     setIsPainting(true);
   };
 
-  const startErase = (event: MouseEvent<HTMLCanvasElement>) => {
-    const cursorSize = 24;
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
-
-    const { offsetX, offsetY } = event.nativeEvent;
-    const scaledOffsetX = offsetX / scale;
-    const scaledOffsetY = offsetY / scale;
-
-    const startingX = scaledOffsetX + cursorSize / 2;
-    const startingY = scaledOffsetY + cursorSize / 2;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.beginPath();
-    ctx.moveTo(startingX, startingY);
-    setIsErasing(true);
-  };
-
-  const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  };
-  const eraser = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.arc(x, y, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalCompositeOperation = 'source-over';
-  };
-
   const paint = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isPainting) return;
 
@@ -214,39 +182,73 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     const startingX = scaledOffsetX + cursorSize / 2;
     const startingY = scaledOffsetY + cursorSize / 2;
+    
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    console.log(startingX,startingY)
     ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
     ctx.lineWidth = 5;
     draw(ctx, startingX, startingY);
 
   };
 
-  const erase = (event: MouseEvent<HTMLCanvasElement>) => {
-    if (!isErasing) return;
+  const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
 
-    const cursorSize = 21;
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
+  const endPaint = () => {
+    setIsPainting(false);
+  };
+
+  const startErase = (event: MouseEvent<HTMLCanvasElement>) => {
+    const cursorSize = 24;
+    const canvasE = transparentCanvasRef.current;
+    if (!canvasE) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
     const scaledOffsetY = offsetY / scale;
 
-    const startingX = scaledOffsetX + cursorSize / 2;
-    const startingY = scaledOffsetY + cursorSize / 2;
+    const startingXE = scaledOffsetX + cursorSize / 2;
+    const startingYE = scaledOffsetY + cursorSize / 2;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0)';
-    ctx.lineWidth = 5;
-    eraser(ctx, startingX, startingY)
+    const ctxE = canvasE.getContext('2d');
+    if (!ctxE) return;
+
+    ctxE.beginPath();
+    ctxE.moveTo(startingXE, startingYE);
+    setIsErasing(true);
+  };
+
+  const erase = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (!isErasing) return;
+
+    const cursorSize = 21;
+    const canvasE = transparentCanvasRef.current;
+    if (!canvasE) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    const scaledOffsetX = offsetX / scale;
+    const scaledOffsetY = offsetY / scale;
+
+    const startingXE = scaledOffsetX + cursorSize / 2;
+    const startingYE = scaledOffsetY + cursorSize / 2;
+
+    const ctxE = canvasE.getContext('2d');
+    if (!ctxE) return;
+
+    // eraser(ctxE, startingXE, startingYE)
+    ctxE.clearRect(startingXE - 5, startingYE - 5, 12, 12);
 
   };
 
-  const endPaint = () => {
-    setIsPainting(false);
+  const eraser = (ctxE: CanvasRenderingContext2D, x: number, y: number) => {
+    ctxE.globalCompositeOperation = 'destination-out';
+    ctxE.arc(x, y, 5, 0, Math.PI * 2);
+    ctxE.fill();
   };
 
   const endErase = () => {

@@ -10,11 +10,9 @@ export async function POST(request: NextRequest) {
 
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
-  console.log(buffer)
   
   const path = `${process.cwd()}/public/${file.name}`;
   await writeFile(path, buffer)
-  console.log(`open ${path} to see the uploaded file`)
 
   return NextResponse.json({ success: true })
 }
