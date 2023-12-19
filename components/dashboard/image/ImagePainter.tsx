@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, MouseEvent } from 'react';
+import React, { useState, useRef, useEffect, MouseEvent, useCallback } from 'react';
 import { CiSquarePlus, CiSquareMinus, CiSettings } from "react-icons/ci";
 import { MdDraw } from "react-icons/md";
 import { FaEraser } from "react-icons/fa6";
@@ -11,21 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import { Button } from '@/components/ui/button';
-
-interface ImagePainterProps {
-  imageBuffer: string | ArrayBuffer | null;
-}
-
-interface IconsProps {
-  react_icons: JSX.Element;
-  content: string;
-  canvasClick: string;
-}
-
-interface ScaleOffset {
-  x: number;
-  y: number;
-}
+import { ImagePainterProps, IconsProps, ScaleOffset } from '@/type/types';
 
 const icons: IconsProps[] = [
   {
@@ -81,26 +67,11 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [panOffset, setPanOffset] = useState<ScaleOffset>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [drawnPaths, setDrawnPaths] = useState<any[]>([]);
-  const [redoPaths, setRedoPaths] = useState<any[]>([]);
 
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
 
-  const svgDraw = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="5" fill="white"/>
-  </svg>
-  `;
-
-  const base64Draw = btoa(svgDraw);
-
-  const svgEraser = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="5" stroke="black"/>
-  </svg>
-  `;
-
-  const base64Eraser = btoa(svgEraser);
-
+  const transparentCanvas = transparentCanvasRef.current;
 
   const maxScale = 1.4;
   const minScale = 1;
@@ -121,14 +92,16 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const transparentCanvas = transparentCanvasRef.current;
 
-    if (!canvas || !imageBuffer) {
+    if (!canvas || !transparentCanvas || !imageBuffer) {
       console.error('Canvas or image buffer not available.');
       return;
     }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!ctx || !transparentCtx) {
       console.error('Canvas context not available.');
       return;
     }
@@ -157,18 +130,17 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     }
 
     ctx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
+    transparentCtx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
 
   }, [imageBuffer, scale, panOffset]);
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
+    if (!transparentCanvas) return;
 
     if (canvasStates.length === 0) {
-      pushCanvasState(canvas.toDataURL());
+      pushCanvasState(transparentCanvas.toDataURL());
     }
-
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
     const scaledOffsetY = offsetY / scale;
@@ -176,20 +148,19 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingX = scaledOffsetX + cursorSize / 2;
     const startingY = scaledOffsetY + cursorSize / 2;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
 
-    ctx.beginPath();
-    ctx.moveTo(startingX, startingY);
+    transparentCtx.beginPath();
+    transparentCtx.moveTo(startingX, startingY);
     setIsPainting(true);
   };
 
-  const paint = (event: MouseEvent<HTMLCanvasElement>) => {
+  const paintMove = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isPainting) return;
-
     const cursorSize = 21;
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
+    if (!transparentCanvas) return;
+    console.log("draw")
 
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
@@ -198,17 +169,16 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingX = scaledOffsetX + cursorSize / 2;
     const startingY = scaledOffsetY + cursorSize / 2;
 
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
+    transparentCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
+    transparentCtx.lineWidth = 5;
+    draw(transparentCtx, startingX, startingY);
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    console.log(startingX, startingY)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-    ctx.lineWidth = 5;
-    draw(ctx, startingX, startingY);
-    console.log(canvas.toDataURL())
   };
 
   const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    console.log("draw")
     ctx.globalCompositeOperation = 'source-over';
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -218,11 +188,10 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     setIsPainting(false);
     pushCanvasState(transparentCanvasRef.current?.toDataURL() || '');
   };
-
   const startErase = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
-    const canvasE = transparentCanvasRef.current;
-    if (!canvasE) return;
+
+    if (!transparentCanvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
@@ -231,20 +200,19 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingXE = scaledOffsetX + cursorSize / 2;
     const startingYE = scaledOffsetY + cursorSize / 2;
 
-    const ctxE = canvasE.getContext('2d');
-    if (!ctxE) return;
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
 
-    ctxE.beginPath();
-    ctxE.moveTo(startingXE, startingYE);
+    transparentCtx.beginPath();
+    transparentCtx.moveTo(startingXE, startingYE);
     setIsErasing(true);
   };
 
-  const erase = (event: MouseEvent<HTMLCanvasElement>) => {
+  const eraseMove =(event: MouseEvent<HTMLCanvasElement>) => {
     if (!isErasing) return;
 
     const cursorSize = 21;
-    const canvasE = transparentCanvasRef.current;
-    if (!canvasE) return;
+    if (!transparentCanvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
@@ -253,18 +221,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingXE = scaledOffsetX + cursorSize / 2;
     const startingYE = scaledOffsetY + cursorSize / 2;
 
-    const ctxE = canvasE.getContext('2d');
-    if (!ctxE) return;
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
 
     // eraser(ctxE, startingXE, startingYE)
-    ctxE.clearRect(startingXE - 5, startingYE - 5, 12, 12);
+    transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
 
-  };
-
-  const eraser = (ctxE: CanvasRenderingContext2D, x: number, y: number) => {
-    ctxE.globalCompositeOperation = 'destination-out';
-    ctxE.arc(x, y, 5, 0, Math.PI * 2);
-    ctxE.fill();
   };
 
   const endErase = () => {
@@ -286,40 +248,41 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     if (currentStep > 0) {
       setCurrentStep((prevStep) => prevStep - 1);
     }
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!transparentCanvas) return;
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
+    console.log(canvasStates[currentStep])
     if (currentStep >= 0) {
       const img = new Image();
       img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        transparentCtx.clearRect(0, 0, transparentCanvas.width, transparentCanvas.height);
+        transparentCtx.drawImage(img, 0, 0, transparentCanvas.width, transparentCanvas.height);
       };
       img.src = canvasStates[currentStep];
     }
   };
 
-  // Function to handle redo
   const handleRedo = () => {
     if (currentStep < canvasStates.length - 1) {
       setCurrentStep((prevStep) => prevStep + 1);
     }
-    const canvas = transparentCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!transparentCanvas) return;
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!transparentCtx) return;
     if (currentStep < canvasStates.length) {
       const img = new Image();
       img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        transparentCtx.clearRect(0, 0, transparentCanvas.width, transparentCanvas.height);
+        transparentCtx.drawImage(img, 0, 0, transparentCanvas.width, transparentCanvas.height);
       };
       img.src = canvasStates[currentStep];
     }
   };
 
-  console.log(canvasStates)
+  const handleIconClick = useCallback((canvasClick: React.SetStateAction<string>) => {
+    setCanvasFunctionality(canvasClick);
+  }, []);
+
   return (
     <>
       <div className='flex justify-start gap-2 pb-1'>
@@ -334,7 +297,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               <HoverCardTrigger asChild>
                 <Button
                   onClick={() => {
-                    setCanvasFunctionality(`${icon.canvasClick}`)
+                    handleIconClick(icon.canvasClick)
                   }}
                   className='px-1' variant={"outline"}
                 >
@@ -397,10 +360,10 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
             }}
             onMouseMove={(event) => {
               if (canvasFunctionality === 'draw') {
-                paint(event);
+                paintMove(event);
               }
               else if (canvasFunctionality === 'eraser') {
-                erase(event);
+                eraseMove(event);
               }
               else if (isDragging && canvasFunctionality === 'drag') {
                 const deltaX = event.clientX - lastPos.current.x;
