@@ -251,7 +251,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     if (!transparentCanvas) return;
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
-    console.log(canvasStates[currentStep])
     if (currentStep >= 0) {
       const img = new Image();
       img.onload = () => {
@@ -285,7 +284,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   return (
     <>
-      <div className='flex justify-start gap-2 pb-1'>
+      <div className='flex justify-start gap-2 pb-3'>
         {
           icons.map((icon, i) => (
             <HoverCard key={i}>
@@ -310,18 +309,19 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
           ))
         }
       </div>
-      <div className='relative'>
-        <div className='absolute top-[150px] left-0 z-2'>
+      <div className='relative grid place-items-center'>
+        <div className='relative top-0 left-0 z-2'>
           <canvas
             ref={canvasRef}
-            width={350}
+            width={360}
             height={350}
+            className='rounded'
           />
         </div>
-        <div className='absolute top-[150px] left-0 z-10'>
+        <div className='absolute top-0 left-0 z-3'>
           <canvas
             ref={transparentCanvasRef}
-            width={350}
+            width={360}
             height={350}
             onMouseDown={(event) => {
               if (canvasFunctionality === 'draw') {
@@ -385,7 +385,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                     canvasFunctionality === 'undo' ? 'cursor-alias' :
                       canvasFunctionality === 'redo' ? 'cursor-alias' :
                         canvasFunctionality === 'drag' ? 'cursor-move' :
-                          'cursor-pointer'} `
+                          'cursor-pointer'} rounded `
             }
           />
         </div>
