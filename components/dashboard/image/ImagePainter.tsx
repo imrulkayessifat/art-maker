@@ -58,6 +58,7 @@ const icons: IconsProps[] = [
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef1 = useRef<HTMLCanvasElement>(null);
   const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasFunctionality, setCanvasFunctionality] = useState<string>('default');
   const [isPainting, setIsPainting] = useState<boolean>(false);
@@ -208,7 +209,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     setIsErasing(true);
   };
 
-  const eraseMove =(event: MouseEvent<HTMLCanvasElement>) => {
+  const eraseMove = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isErasing) return;
 
     const cursorSize = 21;
@@ -317,7 +318,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
             height={350}
             className='rounded'
           />
-        </div>
+        </div> 
         <div className='absolute top-0 left-0 z-3'>
           <canvas
             ref={transparentCanvasRef}
