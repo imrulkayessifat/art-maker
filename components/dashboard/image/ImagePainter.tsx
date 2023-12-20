@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, MouseEvent, useCallback } from 'react';
+import React, { useState, useRef, useEffect, MouseEvent, useCallback, useLayoutEffect } from 'react';
 import { CiSquarePlus, CiSquareMinus, CiSettings } from "react-icons/ci";
 import { MdDraw } from "react-icons/md";
 import { FaEraser } from "react-icons/fa6";
@@ -58,11 +58,11 @@ const icons: IconsProps[] = [
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasRef1 = useRef<HTMLCanvasElement>(null);
   const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const [canvasFunctionality, setCanvasFunctionality] = useState<string>('default');
   const [isPainting, setIsPainting] = useState<boolean>(false);
   const [isErasing, setIsErasing] = useState<boolean>(false);
+
   const [scale, setScale] = useState<number>(1);
 
   const [panOffset, setPanOffset] = useState<ScaleOffset>({ x: 0, y: 0 });
@@ -130,10 +130,44 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       console.error('Invalid imageBuffer type.');
     }
 
-    ctx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
-    transparentCtx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
-
   }, [imageBuffer, scale, panOffset]);
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    const transparentCanvas = transparentCanvasRef.current;
+
+    if (!canvas || !transparentCanvas || !imageBuffer) {
+      console.error('Canvas or image buffer not available.');
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    const transparentCtx = transparentCanvas.getContext('2d');
+    if (!ctx || !transparentCtx) {
+      console.error('Canvas context not available.');
+      return;
+    }
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.translate(centerX, centerY);
+    ctx.scale(scale, scale);
+    ctx.translate(-centerX, -centerY);
+
+    transparentCtx.setTransform(1, 0, 0, 1, 0, 0);
+    transparentCtx.translate(centerX, centerY);
+    transparentCtx.scale(scale, scale);
+    transparentCtx.translate(-centerX, -centerY);
+
+    // ctx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
+    // transparentCtx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
+    
+  }, [scale, panOffset])
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
@@ -166,6 +200,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX / scale;
     const scaledOffsetY = offsetY / scale;
+
+    console.log(scale)
 
     const startingX = scaledOffsetX + cursorSize / 2;
     const startingY = scaledOffsetY + cursorSize / 2;
@@ -318,13 +354,15 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
             height={350}
             className='rounded'
           />
-        </div> 
+        </div>
         <div className='absolute top-0 left-0 z-3'>
           <canvas
             ref={transparentCanvasRef}
             width={360}
             height={350}
             onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
               if (canvasFunctionality === 'draw') {
                 startPaint(event);
               }
@@ -349,6 +387,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               }
             }}
             onMouseUp={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
               if (canvasFunctionality === 'draw') {
                 endPaint();
               }
@@ -360,6 +400,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               }
             }}
             onMouseMove={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
               if (canvasFunctionality === 'draw') {
                 paintMove(event);
               }
