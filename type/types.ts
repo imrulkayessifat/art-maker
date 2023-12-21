@@ -12,3 +12,5 @@ export interface ScaleOffset {
     x: number;
     y: number;
 }
+
+export type IconComponent = React.FC<React.SVGProps<SVGSVGElement>>;

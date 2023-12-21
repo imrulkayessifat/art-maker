@@ -1,9 +1,4 @@
 import React, { useState, useRef, useEffect, MouseEvent, useCallback, useLayoutEffect } from 'react';
-import { CiSquarePlus, CiSquareMinus, CiSettings } from "react-icons/ci";
-import { MdDraw } from "react-icons/md";
-import { FaEraser } from "react-icons/fa6";
-import { IoArrowUndoCircleOutline, IoArrowRedoCircleOutline } from "react-icons/io5";
-import { TbDragDrop2 } from "react-icons/tb";
 
 import {
   HoverCard,
@@ -11,50 +6,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import { Button } from '@/components/ui/button';
-import { ImagePainterProps, IconsProps } from '@/type/types';
-
-const icons: IconsProps[] = [
-  {
-    react_icons: <CiSquarePlus className="w-7 h-7 cursor-pointer" />,
-    content: 'Zoom In',
-    canvasClick: 'zoomin'
-  },
-  {
-    react_icons: <CiSquareMinus className="w-7 h-7 cursor-pointer" />,
-    content: 'Zoom Out',
-    canvasClick: 'zoomout'
-  },
-  {
-    react_icons: <MdDraw className="w-7 h-7 cursor-pointer" />,
-    content: 'Draw',
-    canvasClick: 'draw'
-  },
-  {
-    react_icons: <FaEraser className="w-7 h-7 cursor-pointer" />,
-    content: 'Eraser',
-    canvasClick: 'eraser'
-  },
-  {
-    react_icons: <IoArrowUndoCircleOutline className="w-7 h-7 cursor-pointer" />,
-    content: 'Undo',
-    canvasClick: 'undo'
-  },
-  {
-    react_icons: <IoArrowRedoCircleOutline className="w-7 h-7 cursor-pointer" />,
-    content: 'Redo',
-    canvasClick: 'redo'
-  },
-  {
-    react_icons: <TbDragDrop2 className="w-7 h-7 cursor-pointer" />,
-    content: 'Pan',
-    canvasClick: 'pan'
-  },
-  {
-    react_icons: <CiSettings className="w-7 h-7 cursor-pointer" />,
-    content: 'Default',
-    canvasClick: 'default'
-  }
-]
+import { ImagePainterProps } from '@/type/types';
+import { icons } from '@/lib/remix/icons';
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -74,7 +27,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const transparentCanvas = transparentCanvasRef.current;
 
-  const maxScale = 1.7;
+  const maxScale = 1.6;
   const minScale = 1;
 
   const handleZoomIn = () => {
@@ -356,8 +309,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                   }}
                   className='px-1' variant={"outline"}
                 >
-                  {React.cloneElement(icon.react_icons, {
-                    className: `${icon.react_icons.props.className} ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`
+                  {React.createElement(icon.react_icons, {
+                    className: `w-7 h-7 cursor-pointer ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`
                   })}
                 </Button>
               </HoverCardTrigger>
