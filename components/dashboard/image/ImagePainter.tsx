@@ -11,7 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import { Button } from '@/components/ui/button';
-import { ImagePainterProps, IconsProps, ScaleOffset } from '@/type/types';
+import { ImagePainterProps, IconsProps } from '@/type/types';
 
 const icons: IconsProps[] = [
   {
@@ -46,8 +46,8 @@ const icons: IconsProps[] = [
   },
   {
     react_icons: <TbDragDrop2 className="w-7 h-7 cursor-pointer" />,
-    content: 'Drag',
-    canvasClick: 'drag'
+    content: 'Pan',
+    canvasClick: 'pan'
   },
   {
     react_icons: <CiSettings className="w-7 h-7 cursor-pointer" />,
@@ -65,16 +65,16 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const [scale, setScale] = useState<number>(1);
 
-  const [panOffset, setPanOffset] = useState<ScaleOffset>({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const lastPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
 
+  const [panning, setPanning] = useState<boolean>(false);
+  const [startPanPosition, setStartPanPosition] = useState<{ x: number; y: number } | null>(null);
+  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
   const transparentCanvas = transparentCanvasRef.current;
 
-  const maxScale = 1.4;
+  const maxScale = 1.7;
   const minScale = 1;
 
   const handleZoomIn = () => {
@@ -148,25 +148,36 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       return;
     }
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.translate(centerX, centerY);
-    ctx.scale(scale, scale);
-    ctx.translate(-centerX, -centerY);
-
-    transparentCtx.setTransform(1, 0, 0, 1, 0, 0);
-    transparentCtx.translate(centerX, centerY);
-    transparentCtx.scale(scale, scale);
-    transparentCtx.translate(-centerX, -centerY);
-
     // ctx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
     // transparentCtx.setTransform(scale, 0, 0, scale, panOffset.x, panOffset.y);
-    
+
+    const scaledWidth = canvas.width * scale;
+    const scaledHeight = canvas.height * scale;
+
+    // const offsetX = (canvas.width - scaledWidth) / 2 + panOffset.x;
+    // const offsetY = (canvas.height - scaledHeight) / 2 + panOffset.y;
+
+    // ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+    // transparentCtx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+
+    const maxOffsetX = (scaledWidth - canvas.width) / 2;
+    const minOffsetX = -maxOffsetX;
+    const maxOffsetY = (scaledHeight - canvas.height) / 2;
+    const minOffsetY = -maxOffsetY;
+
+    let newPanOffsetX = panOffset.x;
+    let newPanOffsetY = panOffset.y;
+    if (newPanOffsetX > maxOffsetX) newPanOffsetX = maxOffsetX;
+    if (newPanOffsetX < minOffsetX) newPanOffsetX = minOffsetX;
+    if (newPanOffsetY > maxOffsetY) newPanOffsetY = maxOffsetY;
+    if (newPanOffsetY < minOffsetY) newPanOffsetY = minOffsetY;
+
+    const offsetX = (canvas.width - scaledWidth) / 2 + newPanOffsetX;
+    const offsetY = (canvas.height - scaledHeight) / 2 + newPanOffsetY;
+
+    ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+    transparentCtx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+
   }, [scale, panOffset])
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
@@ -177,11 +188,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       pushCanvasState(transparentCanvas.toDataURL());
     }
     const { offsetX, offsetY } = event.nativeEvent;
-    const scaledOffsetX = offsetX / scale;
-    const scaledOffsetY = offsetY / scale;
+    const scaledOffsetX = offsetX * scale;
+    const scaledOffsetY = offsetY * scale;
 
-    const startingX = scaledOffsetX + cursorSize / 2;
-    const startingY = scaledOffsetY + cursorSize / 2;
+    const startingX = (scaledOffsetX + (cursorSize / 2)) / scale;
+    const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
+
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -193,18 +205,15 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const paintMove = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isPainting) return;
-    const cursorSize = 21;
+    const cursorSize = 24;
     if (!transparentCanvas) return;
-    console.log("draw")
 
     const { offsetX, offsetY } = event.nativeEvent;
-    const scaledOffsetX = offsetX / scale;
-    const scaledOffsetY = offsetY / scale;
+    const scaledOffsetX = offsetX * scale;
+    const scaledOffsetY = offsetY * scale;
 
-    console.log(scale)
-
-    const startingX = scaledOffsetX + cursorSize / 2;
-    const startingY = scaledOffsetY + cursorSize / 2;
+    const startingX = (scaledOffsetX + (cursorSize / 2)) / scale;
+    const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -231,11 +240,11 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     if (!transparentCanvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
-    const scaledOffsetX = offsetX / scale;
-    const scaledOffsetY = offsetY / scale;
+    const scaledOffsetX = offsetX * scale;
+    const scaledOffsetY = offsetY * scale;
 
-    const startingXE = scaledOffsetX + cursorSize / 2;
-    const startingYE = scaledOffsetY + cursorSize / 2;
+    const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
+    const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -252,11 +261,11 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     if (!transparentCanvas) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
-    const scaledOffsetX = offsetX / scale;
-    const scaledOffsetY = offsetY / scale;
+    const scaledOffsetX = offsetX * scale;
+    const scaledOffsetY = offsetY * scale;
 
-    const startingXE = scaledOffsetX + cursorSize / 2;
-    const startingYE = scaledOffsetY + cursorSize / 2;
+    const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
+    const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -318,6 +327,16 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const handleIconClick = useCallback((canvasClick: React.SetStateAction<string>) => {
     setCanvasFunctionality(canvasClick);
   }, []);
+
+  const startPan = (event: MouseEvent<HTMLCanvasElement>) => {
+    setPanning(true);
+    setStartPanPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const endPan = () => {
+    setPanning(false);
+    setStartPanPosition(null);
+  };
 
   return (
     <>
@@ -381,22 +400,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               else if (canvasFunctionality === 'zoomout') {
                 handleZoomOut();
               }
-              else if (canvasFunctionality === 'drag') {
-                setIsDragging(true);
-                lastPos.current = { x: event.clientX, y: event.clientY };
-              }
-            }}
-            onMouseUp={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              if (canvasFunctionality === 'draw') {
-                endPaint();
-              }
-              else if (canvasFunctionality === 'eraser') {
-                endErase();
-              }
-              else if (isDragging && canvasFunctionality === 'drag') {
-                setIsDragging(false);
+              else if (canvasFunctionality === 'pan') {
+                startPan(event);
               }
             }}
             onMouseMove={(event) => {
@@ -408,18 +413,25 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               else if (canvasFunctionality === 'eraser') {
                 eraseMove(event);
               }
-              else if (isDragging && canvasFunctionality === 'drag') {
-                const deltaX = event.clientX - lastPos.current.x;
-                const deltaY = event.clientY - lastPos.current.y;
-
-                setPanOffset((prevOffset) => ({
-                  x: prevOffset.x + deltaX / scale,
-                  y: prevOffset.y + deltaY / scale,
-                }));
-
-                lastPos.current = { x: event.clientX, y: event.clientY };
+              else if (canvasFunctionality === 'pan' && panning && startPanPosition) {
+                const offsetX = event.clientX - startPanPosition.x;
+                const offsetY = event.clientY - startPanPosition.y;
+                setPanOffset({ x: panOffset.x + offsetX, y: panOffset.y + offsetY });
+                setStartPanPosition({ x: event.clientX, y: event.clientY });
               }
-
+            }}
+            onMouseUp={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              if (canvasFunctionality === 'draw') {
+                endPaint();
+              }
+              else if (canvasFunctionality === 'eraser') {
+                endErase();
+              }
+              else if (canvasFunctionality === 'pan') {
+                endPan();
+              }
             }}
             className={`${canvasFunctionality === 'zoomin' ? 'cursor-zoom-in' :
               canvasFunctionality === 'zoomout' ? 'cursor-zoom-out' :
@@ -427,7 +439,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                   canvasFunctionality === 'eraser' ? 'custom-eraser' :
                     canvasFunctionality === 'undo' ? 'cursor-alias' :
                       canvasFunctionality === 'redo' ? 'cursor-alias' :
-                        canvasFunctionality === 'drag' ? 'cursor-move' :
+                        canvasFunctionality === 'pan' ? 'cursor-move' :
                           'cursor-pointer'} rounded `
             }
           />

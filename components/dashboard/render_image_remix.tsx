@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { useImageRemixStore } from '@/hooks/image_remix'
-import ImagePainter from './image/ImagePainter'
+import ImagePainter from '@/components/dashboard/image/ImagePainter'
 
 const RenderImageRemix = () => {
     const isInImageRemix = useImageRemixStore((state) => state.isInImageRemix)
