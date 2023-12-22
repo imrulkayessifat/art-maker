@@ -130,7 +130,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
     transparentCtx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
-
+    const img = new Image();
+    img.onload = () => {
+      transparentCtx.clearRect(0, 0, transparentCanvas.width, transparentCanvas.height);
+      transparentCtx.drawImage(img, 0, 0, transparentCanvas.width, transparentCanvas.height);
+    };
+    img.src = canvasStates[canvasStates.length-1];
   }, [scale, panOffset])
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
@@ -140,13 +145,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     if (canvasStates.length === 0) {
       pushCanvasState(transparentCanvas.toDataURL());
     }
+
     const { offsetX, offsetY } = event.nativeEvent;
     const scaledOffsetX = offsetX * scale;
     const scaledOffsetY = offsetY * scale;
-
-    const startingX = (scaledOffsetX + (cursorSize / 2)) / scale;
-    const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
-
+    const startingX = (scaledOffsetX + (cursorSize / 2));
+    const startingY = (scaledOffsetY + (cursorSize / 2));
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -165,8 +169,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const scaledOffsetX = offsetX * scale;
     const scaledOffsetY = offsetY * scale;
 
-    const startingX = (scaledOffsetX + (cursorSize / 2)) / scale;
-    const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
+    const startingX = (scaledOffsetX + (cursorSize / 2));
+    const startingY = (scaledOffsetY + (cursorSize / 2));
 
     const transparentCtx = transparentCanvas.getContext('2d');
     if (!transparentCtx) return;
@@ -177,7 +181,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   };
 
   const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    console.log("draw")
     ctx.globalCompositeOperation = 'source-over';
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -187,6 +190,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     setIsPainting(false);
     pushCanvasState(transparentCanvasRef.current?.toDataURL() || '');
   };
+
   const startErase = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
 
