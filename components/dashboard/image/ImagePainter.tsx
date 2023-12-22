@@ -135,8 +135,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       transparentCtx.clearRect(0, 0, transparentCanvas.width, transparentCanvas.height);
       transparentCtx.drawImage(img, 0, 0, transparentCanvas.width, transparentCanvas.height);
     };
-    img.src = canvasStates[canvasStates.length-1];
-  }, [scale, panOffset])
+    img.src = canvasStates[currentStep];
+  }, [scale, panOffset,currentStep])
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
