@@ -225,7 +225,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     <>
       <TransformWrapper
         initialScale={scale}
-        panning={{ disabled: canvasFunctionality !== 'pan', velocityDisabled: true }}
+        panning={{ disabled: canvasFunctionality === 'draw' || canvasFunctionality === 'eraser', velocityDisabled: true }}
         doubleClick={{ disabled: true }}
         onTransformed={(e) => {
           setScale(e.instance.transformState.scale)
