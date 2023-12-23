@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { useImageRemixStore } from '@/hooks/image_remix'
 import ImagePainter from '@/components/dashboard/image/ImagePainter'
+import ExamplePaint from './image/ExamplePaint'
 
 const RenderImageRemix = () => {
     const isInImageRemix = useImageRemixStore((state) => state.isInImageRemix)
@@ -26,7 +27,8 @@ const RenderImageRemix = () => {
                         onMouseLeave={handleMouseLeave}
                         className='h-full'>
 
-                        <ImagePainter imageBuffer={isInImageRemix} />
+                        {/* <ImagePainter imageBuffer={isInImageRemix} /> */}
+                        <ExamplePaint imageBuffer={isInImageRemix} />
                         {/* <Image
                             src={`${isInImageRemix}` || '/rose.png'}
                             alt={''}

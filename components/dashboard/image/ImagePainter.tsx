@@ -129,16 +129,14 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const offsetY = (canvas.height - scaledHeight) / 2 + newPanOffsetY;
 
     ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
-    transparentCtx.resetTransform();
     transparentCtx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
-
     const img = new Image();
     img.onload = () => {
       transparentCtx.clearRect(0, 0, transparentCanvas.width, transparentCanvas.height);
       transparentCtx.drawImage(img, 0, 0, transparentCanvas.width, transparentCanvas.height);
     };
     img.src = canvasStates[currentStep];
-  }, [scale, panOffset, currentStep])
+  }, [scale, panOffset])
 
   const startPaint = (event: MouseEvent<HTMLCanvasElement>) => {
     const cursorSize = 24;
@@ -153,13 +151,11 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     const { offsetX, offsetY } = event.nativeEvent;
     const originalPoint = new DOMPoint(offsetX, offsetY);
-    const currentTransformedCursor= transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
+    const currentTransformedCursor = transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
     const scaledOffsetX = currentTransformedCursor.x * scale;
     const scaledOffsetY = currentTransformedCursor.y * scale;
     const startingX = (scaledOffsetX + (cursorSize / 2)) / scale;
     const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
-
-
 
     transparentCtx.beginPath();
     transparentCtx.moveTo(startingX, startingY);
@@ -176,7 +172,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     const { offsetX, offsetY } = event.nativeEvent;
     const originalPoint = new DOMPoint(offsetX, offsetY);
-    const currentTransformedCursor= transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
+    const currentTransformedCursor = transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
     const scaledOffsetX = currentTransformedCursor.x * scale;
     const scaledOffsetY = currentTransformedCursor.y * scale;
 
@@ -210,7 +206,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     const { offsetX, offsetY } = event.nativeEvent;
     const originalPoint = new DOMPoint(offsetX, offsetY);
-    const currentTransformedCursor= transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
+    const currentTransformedCursor = transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
     const scaledOffsetX = currentTransformedCursor.x * scale;
     const scaledOffsetY = currentTransformedCursor.y * scale;
 
@@ -233,7 +229,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     const { offsetX, offsetY } = event.nativeEvent;
     const originalPoint = new DOMPoint(offsetX, offsetY);
-    const currentTransformedCursor= transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
+    const currentTransformedCursor = transparentCtx.getTransform().invertSelf().transformPoint(originalPoint);
     const scaledOffsetX = currentTransformedCursor.x * scale;
     const scaledOffsetY = currentTransformedCursor.y * scale;
 
