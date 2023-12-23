@@ -20,6 +20,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const [scale, setScale] = useState<number>(1);
 
+  let lastPoint: { x: number; y: number } | null = null;
+
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
 
@@ -130,6 +132,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.globalCompositeOperation = 'source-over';
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -177,10 +181,20 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
     const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
-    // eraser(ctxE, startingXE, startingYE)
-    transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
+    // transparentCtx.lineWidth = 6;
+    // transparentCtx.globalCompositeOperation = 'destination-out';
+    // transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
+    // transparentCtx.globalCompositeOperation = 'source-over';
+    eraser(transparentCtx, startingXE, startingYE)
 
   };
+
+  const eraser = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over';
+  }
 
   const endErase = () => {
     setIsErasing(false);
