@@ -22,6 +22,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [previousX, setPreviousX] = useState(0);
   const [previousY, setPreviousY] = useState(0);
 
+  const [previousEraserX, setPreviousEraserX] = useState(0);
+  const [previousEraserY, setPreviousEraserY] = useState(0);
+
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
 
@@ -138,7 +141,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       startingY, {
       stroke: 'rgba(255, 255, 255, 1)',
       strokeWidth: 5,
-      roughness: 0.5,
+      roughness: 0.1,
     });
     // draw(transparentCtx, startingX, startingY);
 
@@ -198,7 +201,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     // transparentCtx.lineWidth = 6;
     // transparentCtx.globalCompositeOperation = 'destination-out';
     // transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
-    // transparentCtx.globalCompositeOperation = 'source-over';
+    
     eraser(transparentCtx, startingXE, startingYE)
 
   };
