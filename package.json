@@ -33,6 +33,7 @@
     "framer-motion": "^10.16.15",
     "fs": "^0.0.1-security",
     "gsap": "^3.12.3",
+    "lazy-brush": "^2.0.1",
     "lucide-react": "^0.291.0",
     "next": "13.5.4",
     "next-themes": "^0.2.1",
@@ -47,6 +48,7 @@
     "react-scroll-parallax": "^3.4.3",
     "react-youtube": "^10.1.0",
     "react-zoom-pan-pinch": "^3.3.0",
+    "roughjs": "^4.6.6",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "tsparticles": "^2.12.0",
@@ -55,6 +57,7 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@types/lazy-brush": "^1.0.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

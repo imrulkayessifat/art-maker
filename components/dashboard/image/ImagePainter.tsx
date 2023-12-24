@@ -3,8 +3,8 @@ import {
   TransformWrapper,
   TransformComponent,
   ReactZoomPanPinchRef,
-  ReactZoomPanPinchState,
 } from "react-zoom-pan-pinch";
+import rough from 'roughjs';
 
 import { ImagePainterProps } from "@/type/types";
 
@@ -12,15 +12,15 @@ import { icons } from '@/lib/remix/icons';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 
-
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const transparentCanvas = transparentCanvasRef.current;
 
-  const [scale, setScale] = useState<number>(1);
 
-  let lastPoint: { x: number; y: number } | null = null;
+  const [scale, setScale] = useState<number>(1);
+  const [previousX, setPreviousX] = useState(0);
+  const [previousY, setPreviousY] = useState(0);
 
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
@@ -106,7 +106,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     transparentCtx.beginPath();
-    transparentCtx.moveTo(startingX, startingY);
+    transparentCtx.lineJoin = 'round';
+    transparentCtx.lineCap = "round";
+    // transparentCtx.moveTo(startingX, startingY);
+    setPreviousX(startingX);
+    setPreviousY(startingY);
+
     setIsPainting(true);
   };
 
@@ -127,13 +132,22 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     transparentCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
     transparentCtx.lineWidth = 5;
-    draw(transparentCtx, startingX, startingY);
+    const rc = rough.canvas(transparentCanvas);
+
+    rc.line(previousX, previousY, startingX,
+      startingY, {
+      stroke: 'rgba(255, 255, 255, 1)',
+      strokeWidth: 5,
+      roughness: 0.5,
+    });
+    // draw(transparentCtx, startingX, startingY);
+
+    setPreviousX(startingX);
+    setPreviousY(startingY);
   };
 
   const draw = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.globalCompositeOperation = 'source-over';
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
     ctx.lineTo(x, y);
     ctx.stroke();
   };
