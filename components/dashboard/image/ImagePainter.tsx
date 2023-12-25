@@ -6,7 +6,7 @@ import {
 } from "react-zoom-pan-pinch";
 import rough from 'roughjs';
 
-import { ImagePainterProps } from "@/type/types";
+import { ImagePainterProps, CursorStyles } from "@/type/types";
 
 import { icons } from '@/lib/remix/icons';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -17,13 +17,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const transparentCanvas = transparentCanvasRef.current;
 
-
   const [scale, setScale] = useState<number>(1);
   const [previousX, setPreviousX] = useState(0);
   const [previousY, setPreviousY] = useState(0);
-
-  const [previousEraserX, setPreviousEraserX] = useState(0);
-  const [previousEraserY, setPreviousEraserY] = useState(0);
 
   const [canvasStates, setCanvasStates] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(-1);
@@ -32,8 +28,42 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [isPainting, setIsPainting] = useState<boolean>(false);
   const [isErasing, setIsErasing] = useState<boolean>(false);
 
+  const [drawSize, setDrawSize] = useState<number>(5);
+
   const transformComponentRef = useRef<ReactZoomPanPinchRef>(null);
 
+  const [cursorStyles, setCursorStyles] = useState<CursorStyles>({
+    'draw': 'custom-draw-7',
+    'eraser': 'custom-eraser',
+    'undo': 'cursor-alias',
+    'redo': 'cursor-alias',
+    'pan': 'cursor-pointer',
+    'default': 'cursor-pointer'
+  });
+
+  useEffect(()=>{
+
+    setCursorStyles(prevState => ({
+      ...prevState,
+      draw: `custom-draw-${drawSize}`
+    }));
+
+  },[drawSize])
+
+  const svgDraw = `<svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" fill="white"/>
+  </svg>
+  `;
+
+const base64Draw = btoa(svgDraw);
+console.log(base64Draw)
+
+  const svgEraser = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r=${drawSize} stroke="black"/>
+  </svg>
+  `;
+
+  const base64Eraser = btoa(svgEraser);
 
   const handleIconClick = useCallback((canvasClick: React.SetStateAction<string>) => {
     setCanvasFunctionality(canvasClick);
@@ -134,13 +164,13 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     transparentCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
-    transparentCtx.lineWidth = 5;
+    transparentCtx.lineWidth = drawSize*1.25;
     const rc = rough.canvas(transparentCanvas);
 
     rc.line(previousX, previousY, startingX,
       startingY, {
       stroke: 'rgba(255, 255, 255, 1)',
-      strokeWidth: 5,
+      strokeWidth: drawSize*1.25,
       roughness: 0.1,
     });
     // draw(transparentCtx, startingX, startingY);
@@ -184,7 +214,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const eraseMove = (event: MouseEvent<HTMLCanvasElement>) => {
     if (!isErasing) return;
 
-    const cursorSize = 21;
+    const cursorSize = 24;
     if (!transparentCanvas) return;
 
     const transparentCtx = transparentCanvas.getContext('2d');
@@ -198,10 +228,10 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
     const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
-    // transparentCtx.lineWidth = 6;
+    transparentCtx.lineWidth = drawSize;
     // transparentCtx.globalCompositeOperation = 'destination-out';
     // transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
-    
+
     eraser(transparentCtx, startingXE, startingYE)
 
   };
@@ -290,6 +320,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           else if (icon.canvasClick === 'default') {
                             resetTransform();
                           }
+                          else if (icon.canvasClick === 'brush+') {
+                            setDrawSize((prev) => Math.min(prev + 1, 10))
+                          }
+                          else if (icon.canvasClick === 'brush-') {
+                            setDrawSize((prev) => Math.max(prev - 1, 5))
+                          }
                           handleIconClick(icon.canvasClick)
                         }}
                         className='px-1' variant={"outline"}
@@ -349,13 +385,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                         endErase();
                       }
                     }}
-                    className={`${canvasFunctionality === 'draw' ? 'custom-draw' :
-                      canvasFunctionality === 'eraser' ? 'custom-eraser' :
-                        canvasFunctionality === 'undo' ? 'cursor-alias' :
-                          canvasFunctionality === 'redo' ? 'cursor-alias' :
-                            canvasFunctionality === 'pan' ? 'cursor-pointer' :
-                              'cursor-default'} rounded`
-                    }
+                    className={`${cursorStyles[canvasFunctionality]} rounded `}
                   />
                 </div>
               </div>
