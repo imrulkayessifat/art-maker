@@ -34,7 +34,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   const [cursorStyles, setCursorStyles] = useState<CursorStyles>({
     'draw': 'custom-draw-7',
-    'eraser': 'custom-eraser',
+    'eraser': 'custom-eraser-5',
     'undo': 'cursor-alias',
     'redo': 'cursor-alias',
     'pan': 'cursor-pointer',
@@ -45,21 +45,14 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     setCursorStyles(prevState => ({
       ...prevState,
-      draw: `custom-draw-${drawSize}`
+      draw: `custom-draw-${drawSize}`,
+      eraser : `custom-eraser-${drawSize}`
     }));
 
   },[drawSize])
 
-  const svgDraw = `<svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="10" fill="white"/>
-  </svg>
-  `;
-
-const base64Draw = btoa(svgDraw);
-console.log(base64Draw)
-
-  const svgEraser = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r=${drawSize} stroke="black"/>
+  const svgEraser = `<svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" stroke="black"/>
   </svg>
   `;
 
@@ -228,7 +221,7 @@ console.log(base64Draw)
     const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
     const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
-    transparentCtx.lineWidth = drawSize;
+    transparentCtx.lineWidth = drawSize*1.5;
     // transparentCtx.globalCompositeOperation = 'destination-out';
     // transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
 
