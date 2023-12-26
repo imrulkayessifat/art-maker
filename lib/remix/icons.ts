@@ -3,7 +3,8 @@ import { MdDraw } from 'react-icons/md';
 import { FaEraser } from 'react-icons/fa6';
 import { IoArrowUndoCircleOutline, IoArrowRedoCircleOutline } from 'react-icons/io5';
 import { TbDragDrop2 } from 'react-icons/tb';
-import { FaMagnifyingGlassPlus,FaMagnifyingGlassMinus } from "react-icons/fa6";
+import { BsThreeDots } from "react-icons/bs";
+import { FaMagnifyingGlassPlus, FaMagnifyingGlassMinus } from "react-icons/fa6";
 
 import { IconComponent } from '@/type/types';
 
@@ -49,6 +50,9 @@ export const icons: IconDefinition[] = [
         content: 'Pan',
         canvasClick: 'pan'
     },
+]
+
+export const iconsDropDown: IconDefinition[] = [
     {
         react_icons: CiSquarePlus,
         content: 'Brush +',

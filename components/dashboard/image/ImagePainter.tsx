@@ -5,12 +5,27 @@ import {
   ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
 import rough from 'roughjs';
+import { BsThreeDots } from "react-icons/bs";
 
 import { ImagePainterProps, CursorStyles } from "@/type/types";
 
-import { icons } from '@/lib/remix/icons';
+import { icons, iconsDropDown } from '@/lib/remix/icons';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,15 +56,15 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     'default': 'cursor-pointer'
   });
 
-  useEffect(()=>{
+  useEffect(() => {
 
     setCursorStyles(prevState => ({
       ...prevState,
       draw: `custom-draw-${drawSize}`,
-      eraser : `custom-eraser-${drawSize}`
+      eraser: `custom-eraser-${drawSize}`
     }));
 
-  },[drawSize])
+  }, [drawSize])
 
   const handleIconClick = useCallback((canvasClick: React.SetStateAction<string>) => {
     setCanvasFunctionality(canvasClick);
@@ -150,13 +165,13 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingY = (scaledOffsetY + (cursorSize / 2)) / scale;
 
     transparentCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
-    transparentCtx.lineWidth = drawSize*1.25;
+    transparentCtx.lineWidth = drawSize * 1.25;
     const rc = rough.canvas(transparentCanvas);
 
     rc.line(previousX, previousY, startingX,
       startingY, {
       stroke: 'rgba(255, 255, 255, 1)',
-      strokeWidth: drawSize*1.25,
+      strokeWidth: drawSize * 1.25,
       roughness: 0.1,
     });
     // draw(transparentCtx, startingX, startingY);
@@ -214,7 +229,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     const startingXE = (scaledOffsetX + (cursorSize / 2)) / scale;
     const startingYE = (scaledOffsetY + (cursorSize / 2)) / scale;
 
-    transparentCtx.lineWidth = drawSize*1.5;
+    transparentCtx.lineWidth = drawSize * 1.5;
     // transparentCtx.globalCompositeOperation = 'destination-out';
     // transparentCtx.clearRect(startingXE - 5, startingYE - 5, 12, 12);
 
@@ -303,22 +318,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           else if (icon.canvasClick === 'zoomout') {
                             zoomOut();
                           }
-                          else if (icon.canvasClick === 'default') {
-                            resetTransform();
-                          }
-                          else if (icon.canvasClick === 'brush+') {
-                            setDrawSize((prev) => Math.min(prev + 1, 10))
-                          }
-                          else if (icon.canvasClick === 'brush-') {
-                            setDrawSize((prev) => Math.max(prev - 1, 5))
-                          }
-                          else if (icon.canvasClick === 'undo') {
-                            console.log("undo")
-                            handleUndo();
-                          }
-                          else if (icon.canvasClick === 'redo') {
-                            handleRedo();
-                          }
                           handleIconClick(icon.canvasClick)
                         }}
                         className='px-1' variant={"outline"}
@@ -331,6 +330,51 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                   </HoverCard>
                 ))
               }
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="px-1" variant="outline">
+                    <BsThreeDots className="w-7 h-7 cursor-pointer" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="min-w-[70px] w-[70px]">
+                  {
+                    iconsDropDown.map((icon, i) => (
+                      <DropdownMenuItem key={i}>
+                        <HoverCard >
+                          <HoverCardContent className="w-30 mt-5 bg-slate-900">
+                            <div className="space-y-1 space-x-1">
+                              <h5 className="text-sm text-white font-semibold">{icon.content}</h5>
+                            </div>
+                          </HoverCardContent>
+                          <HoverCardTrigger asChild>
+                            <Button
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation()
+                                if (icon.canvasClick === 'default') {
+                                  resetTransform();
+                                }
+                                else if (icon.canvasClick === 'brush+') {
+                                  setDrawSize((prev) => Math.min(prev + 1, 10))
+                                }
+                                else if (icon.canvasClick === 'brush-') {
+                                  setDrawSize((prev) => Math.max(prev - 1, 5))
+                                }
+                                handleIconClick(icon.canvasClick)
+                              }}
+                              className='px-1' variant={"outline"}
+                            >
+                              {React.createElement(icon.react_icons, {
+                                className: `w-7 h-7 cursor-pointer ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`
+                              })}
+                            </Button>
+                          </HoverCardTrigger>
+                        </HoverCard>
+                      </DropdownMenuItem>
+                    ))
+                  }
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <TransformComponent>
               <div className='relative grid place-items-center'>
