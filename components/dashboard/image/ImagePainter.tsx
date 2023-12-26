@@ -318,6 +318,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           else if (icon.canvasClick === 'zoomout') {
                             zoomOut();
                           }
+                          else if (icon.canvasClick === 'undo') {
+                            handleUndo();
+                          }
+                          else if (icon.canvasClick === 'redo') {
+                            handleRedo();
+                          }
                           handleIconClick(icon.canvasClick)
                         }}
                         className='px-1' variant={"outline"}
