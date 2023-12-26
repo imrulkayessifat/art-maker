@@ -327,6 +327,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           handleIconClick(icon.canvasClick)
                         }}
                         className='px-1' variant={"outline"}
+                        disabled={icon.canvasClick === 'export' && currentStep === -1}
                       >
                         {React.createElement(icon.react_icons, {
                           className: `w-7 h-7 cursor-pointer ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`

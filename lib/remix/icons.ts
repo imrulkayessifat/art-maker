@@ -3,7 +3,7 @@ import { MdDraw } from 'react-icons/md';
 import { FaEraser } from 'react-icons/fa6';
 import { IoArrowUndoCircleOutline, IoArrowRedoCircleOutline } from 'react-icons/io5';
 import { TbDragDrop2 } from 'react-icons/tb';
-import { BsThreeDots } from "react-icons/bs";
+import { CiExport } from "react-icons/ci";
 import { FaMagnifyingGlassPlus, FaMagnifyingGlassMinus } from "react-icons/fa6";
 
 import { IconComponent } from '@/type/types';
@@ -46,13 +46,18 @@ export const icons: IconDefinition[] = [
         canvasClick: 'redo'
     },
     {
-        react_icons: TbDragDrop2,
-        content: 'Pan',
-        canvasClick: 'pan'
+        react_icons: CiExport,
+        content: 'Export',
+        canvasClick: 'export'
     },
 ]
 
 export const iconsDropDown: IconDefinition[] = [
+    {
+        react_icons: TbDragDrop2,
+        content: 'Pan',
+        canvasClick: 'pan'
+    },
     {
         react_icons: CiSquarePlus,
         content: 'Brush +',
