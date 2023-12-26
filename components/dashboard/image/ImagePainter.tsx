@@ -33,7 +33,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const transformComponentRef = useRef<ReactZoomPanPinchRef>(null);
 
   const [cursorStyles, setCursorStyles] = useState<CursorStyles>({
-    'draw': 'custom-draw-7',
+    'draw': 'custom-draw-5',
     'eraser': 'custom-eraser-5',
     'undo': 'cursor-alias',
     'redo': 'cursor-alias',
@@ -50,13 +50,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     }));
 
   },[drawSize])
-
-  const svgEraser = `<svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="10" stroke="black"/>
-  </svg>
-  `;
-
-  const base64Eraser = btoa(svgEraser);
 
   const handleIconClick = useCallback((canvasClick: React.SetStateAction<string>) => {
     setCanvasFunctionality(canvasClick);
@@ -319,6 +312,13 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           else if (icon.canvasClick === 'brush-') {
                             setDrawSize((prev) => Math.max(prev - 1, 5))
                           }
+                          else if (icon.canvasClick === 'undo') {
+                            console.log("undo")
+                            handleUndo();
+                          }
+                          else if (icon.canvasClick === 'redo') {
+                            handleRedo();
+                          }
                           handleIconClick(icon.canvasClick)
                         }}
                         className='px-1' variant={"outline"}
@@ -353,12 +353,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                       }
                       else if (canvasFunctionality === 'eraser') {
                         startErase(event)
-                      }
-                      else if (canvasFunctionality === 'undo') {
-                        handleUndo();
-                      }
-                      else if (canvasFunctionality === 'redo') {
-                        handleRedo();
                       }
 
                     }}
