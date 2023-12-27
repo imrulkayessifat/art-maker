@@ -6,6 +6,7 @@ import {
 } from "react-zoom-pan-pinch";
 import rough from 'roughjs';
 import { BsThreeDots } from "react-icons/bs";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 import { ImagePainterProps, CursorStyles } from "@/type/types";
 
@@ -15,15 +16,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -31,6 +24,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transparentCanvasRef = useRef<HTMLCanvasElement>(null);
   const transparentCanvas = transparentCanvasRef.current;
+  const maskingRef = useRef<HTMLCanvasElement>(null);
+  const maskingCanvas = maskingRef.current;
+
 
   const [scale, setScale] = useState<number>(1);
   const [previousX, setPreviousX] = useState(0);
@@ -44,6 +40,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const [isErasing, setIsErasing] = useState<boolean>(false);
 
   const [drawSize, setDrawSize] = useState<number>(5);
+
+  const [view, setView] = useState<boolean | null>(null);
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef>(null);
 
@@ -283,6 +281,52 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     }
   };
 
+  const applyMask = () => {
+    if (!maskingCanvas || !transparentCanvas) return;
+
+    const maskCtx = maskingCanvas.getContext('2d');
+    const transparentCtx = transparentCanvas.getContext('2d');
+
+    if (!maskCtx || !transparentCtx) return;
+
+    maskCtx.fillStyle = 'black';
+    maskCtx.fillRect(0, 0, maskingCanvas.width, maskingCanvas.height);
+
+    maskCtx.drawImage(
+      transparentCanvas,
+      0,
+      0,
+      maskingCanvas.width,
+      maskingCanvas.height
+    );
+
+    const imageData = maskCtx.getImageData(
+      0,
+      0,
+      maskingCanvas.width,
+      maskingCanvas.height
+    );
+
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const isWhite =
+        data[i] === 255 && data[i + 1] === 255 && data[i + 2] === 255;
+
+      if (!isWhite) {
+        data[i] = 0;
+        data[i + 1] = 0;
+        data[i + 2] = 0;
+        data[i + 3] = 255;
+      }
+    }
+
+    maskCtx.putImageData(imageData, 0, 0);
+
+    console.log('Applied mask on maskingCanvas.');
+
+  };
+
   return (
     <>
       <TransformWrapper
@@ -323,6 +367,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                           }
                           else if (icon.canvasClick === 'redo') {
                             handleRedo();
+                          }
+                          else if (icon.canvasClick === 'export') {
+                            applyMask();
+                            if (maskingCanvas) {
+                              setView(true)
+                            }
                           }
                           handleIconClick(icon.canvasClick)
                         }}
@@ -383,51 +433,81 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <TransformComponent>
-              <div className='relative grid place-items-center'>
-                <div className='relative top-0 left-0 z-2'>
-                  <canvas
-                    ref={canvasRef}
-                    width={360}
-                    height={350}
-                    className='rounded'
-                  />
-                </div>
-                <div className='absolute top-0 left-0 z-3'>
-                  <canvas
-                    ref={transparentCanvasRef}
-                    width={360}
-                    height={350}
-                    onMouseDown={(event) => {
-                      if (canvasFunctionality === 'draw') {
-                        startPaint(event);
-                      }
-                      else if (canvasFunctionality === 'eraser') {
-                        startErase(event)
-                      }
+            <div className="relative">
+              <TransformComponent>
+                <div className='relative grid place-items-center'>
 
-                    }}
-                    onMouseMove={(event) => {
-                      if (canvasFunctionality === 'draw') {
-                        paintMove(event);
-                      }
-                      else if (canvasFunctionality === 'eraser') {
-                        eraseMove(event);
-                      }
-                    }}
-                    onMouseUp={() => {
-                      if (canvasFunctionality === 'draw') {
-                        endPaint();
-                      }
-                      else if (canvasFunctionality === 'eraser') {
-                        endErase();
-                      }
-                    }}
-                    className={`${cursorStyles[canvasFunctionality]} rounded `}
-                  />
+                  <div className={`absolute ${view ? 'z-40' : 'z-10'}  top-0 left-0`}>
+                    <canvas
+                      ref={maskingRef}
+                      width={360}
+                      height={350}
+                    />
+                  </div>
+
+                  <div className='relative top-0 left-0 z-20'>
+                    <canvas
+                      ref={canvasRef}
+                      width={360}
+                      height={350}
+                      className='rounded'
+                    />
+                  </div>
+                  <div className='absolute top-0 left-0 z-30'>
+                    <canvas
+                      ref={transparentCanvasRef}
+                      width={360}
+                      height={350}
+                      onMouseDown={(event) => {
+                        if (canvasFunctionality === 'draw') {
+                          startPaint(event);
+                        }
+                        else if (canvasFunctionality === 'eraser') {
+                          startErase(event)
+                        }
+
+                      }}
+                      onMouseMove={(event) => {
+                        if (canvasFunctionality === 'draw') {
+                          paintMove(event);
+                        }
+                        else if (canvasFunctionality === 'eraser') {
+                          eraseMove(event);
+                        }
+                      }}
+                      onMouseUp={() => {
+                        if (canvasFunctionality === 'draw') {
+                          endPaint();
+                        }
+                        else if (canvasFunctionality === 'eraser') {
+                          endErase();
+                        }
+                      }}
+                      className={`${cursorStyles[canvasFunctionality]} rounded `}
+                    />
+                  </div>
+
+
+
                 </div>
-              </div>
-            </TransformComponent>
+              </TransformComponent>
+              {
+                view !== null && (
+                  <>
+                    <div className="absolute top-1/4 left-full z-5 ml-4">
+                      <Button disabled={view} onClick={() => setView(true)} className="rounded px-1" variant={"outline"}>
+                        <FaArrowUp className="w-7 h-7 cursor-pointer" />
+                      </Button>
+                    </div>
+                    <div className="absolute top-2/4 left-full z-5 ml-4">
+                      <Button disabled={!view} onClick={() => setView(false)} className="rounded px-1" variant={"outline"}>
+                        <FaArrowDown className="w-7 h-7 cursor-pointer" />
+                      </Button>
+                    </div>
+                  </>
+                )
+              }
+            </div>
           </React.Fragment>
         )}
       </TransformWrapper>
