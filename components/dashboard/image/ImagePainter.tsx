@@ -7,6 +7,7 @@ import {
 import rough from 'roughjs';
 import { BsThreeDots } from "react-icons/bs";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { IoCopyOutline } from "react-icons/io5";
 import axios from "axios";
 
 import { ImagePainterProps, CursorStyles } from "@/type/types";
@@ -21,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast";
 
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
@@ -354,9 +356,16 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
           'Authorization': `Bearer ${process.env.REPLICATE_API_TOKEN}`
         }
       });
+      let url = new URL(response.data).toString();
+      let shortDescription = url.length > 20 ? url.substring(0, 20) + '...' : url;
       toast({
         title: "Replicate Lama : Output ",
-        description: `${response.data}`,
+        description: `${shortDescription}`,
+        action: <ToastAction onClick={()=>{
+          navigator.clipboard.writeText(response.data)
+        }} altText="Copy">
+          <IoCopyOutline className="w-7 h-7 cursor-pointer" />
+        </ToastAction>,
       })
     } catch (error) {
       toast({
