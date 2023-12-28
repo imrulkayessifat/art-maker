@@ -7,6 +7,7 @@ import {
 import rough from 'roughjs';
 import { BsThreeDots } from "react-icons/bs";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import axios from "axios";
 
 import { ImagePainterProps, CursorStyles } from "@/type/types";
 
@@ -19,6 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useToast } from "@/components/ui/use-toast"
+
 
 const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -53,6 +56,8 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
     'pan': 'cursor-pointer',
     'default': 'cursor-pointer'
   });
+
+  const { toast } = useToast()
 
   useEffect(() => {
 
@@ -327,6 +332,41 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
   };
 
+  const sendDataToAPI = async () => {
+    console.log("hello")
+    if (!maskingCanvas) return;
+    console.log("hello")
+    const imageCanvas = canvasRef.current;
+    if (!imageCanvas) return;
+    console.log("hello")
+
+    const maskURL = maskingCanvas.toDataURL();
+    const imageURL = imageCanvas.toDataURL();
+    const data = {
+      input: {
+        mask: maskURL,
+        image: imageURL
+      }
+    };
+    try {
+      const response = await axios.post('/api/image_remix', data, {
+        headers: {
+          'Authorization': `Bearer ${process.env.REPLICATE_API_TOKEN}`
+        }
+      });
+      toast({
+        title: "Replicate Lama : Output ",
+        description: `${response.data}`,
+      })
+    } catch (error) {
+      toast({
+        title: "Replicate Lama : Error ",
+        description: `${error}`,
+        variant: "destructive"
+      })
+    }
+  }
+
   return (
     <>
       <TransformWrapper
@@ -373,14 +413,15 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                             if (maskingCanvas) {
                               setView(true)
                             }
+                            sendDataToAPI();
                           }
                           handleIconClick(icon.canvasClick)
                         }}
-                        className='px-1' variant={"outline"}
+                        className={`px-1 ${icon.canvasClick === 'export' && currentStep === -1 ? 'cursor-not-allowed' : 'cursor-pointer'}`} variant={"outline"}
                         disabled={icon.canvasClick === 'export' && currentStep === -1}
                       >
                         {React.createElement(icon.react_icons, {
-                          className: `w-7 h-7 cursor-pointer ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`
+                          className: `w-7 h-7  ${canvasFunctionality === icon.canvasClick ? 'text-sky-500' : ''}`
                         })}
                       </Button>
                     </HoverCardTrigger>
@@ -442,6 +483,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                       ref={maskingRef}
                       width={360}
                       height={350}
+                      className="rounded"
                     />
                   </div>
 
@@ -494,13 +536,13 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               {
                 view !== null && (
                   <>
-                    <div className="absolute top-1/4 left-full z-5 ml-4">
-                      <Button disabled={view} onClick={() => setView(true)} className="rounded px-1" variant={"outline"}>
+                    <div className={`absolute ${view ? 'cursor-not-allowed' : 'cursor-pointer'} top-1/4 left-full z-5 ml-4`}>
+                      <Button disabled={view} onClick={() => setView(true)} className={`rounded  px-1`} variant={"outline"}>
                         <FaArrowUp className="w-7 h-7 cursor-pointer" />
                       </Button>
                     </div>
-                    <div className="absolute top-2/4 left-full z-5 ml-4">
-                      <Button disabled={!view} onClick={() => setView(false)} className="rounded px-1" variant={"outline"}>
+                    <div className={`absolute ${!view ? 'cursor-not-allowed' : 'cursor-pointer'} top-2/4 left-full z-5 ml-4`}>
+                      <Button disabled={!view} onClick={() => setView(false)} className={`rounded px-1`} variant={"outline"}>
                         <FaArrowDown className="w-7 h-7 cursor-pointer" />
                       </Button>
                     </div>
