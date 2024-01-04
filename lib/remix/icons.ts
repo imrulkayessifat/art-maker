@@ -5,6 +5,7 @@ import { IoArrowUndoCircleOutline, IoArrowRedoCircleOutline } from 'react-icons/
 import { TbDragDrop2 } from 'react-icons/tb';
 import { CiExport } from "react-icons/ci";
 import { FaMagnifyingGlassPlus, FaMagnifyingGlassMinus } from "react-icons/fa6";
+import { RiAiGenerate } from "react-icons/ri";
 
 import { IconComponent } from '@/type/types';
 
@@ -53,6 +54,11 @@ export const icons: IconDefinition[] = [
 ]
 
 export const iconsDropDown: IconDefinition[] = [
+    {
+        react_icons: RiAiGenerate,
+        content: 'Generate',
+        canvasClick: 'generate'
+    },
     {
         react_icons: TbDragDrop2,
         content: 'Pan',

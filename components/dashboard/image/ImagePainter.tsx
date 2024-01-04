@@ -171,15 +171,20 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
 
     transparentCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
     transparentCtx.lineWidth = drawSize * 1.25;
-    const rc = rough.canvas(transparentCanvas);
 
+    const rc = rough.canvas(transparentCanvas);
     rc.line(previousX, previousY, startingX,
       startingY, {
       stroke: 'rgba(255, 255, 255, 1)',
       strokeWidth: drawSize * 1.25,
-      roughness: 0.1,
+      roughness: 0.5,
     });
     // draw(transparentCtx, startingX, startingY);
+
+    /*implement QuadraticCurve For Line Smooth */
+
+    // transparentCtx.quadraticCurveTo(previousX, previousY, startingX,startingY)
+    // transparentCtx.stroke();
 
     setPreviousX(startingX);
     setPreviousY(startingY);
@@ -361,7 +366,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
       toast({
         title: "Replicate Lama : Output ",
         description: `${shortDescription}`,
-        action: <ToastAction onClick={()=>{
+        action: <ToastAction onClick={() => {
           navigator.clipboard.writeText(response.data)
         }} altText="Copy">
           <IoCopyOutline className="w-7 h-7 cursor-pointer" />
@@ -395,7 +400,7 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
               {
                 icons.map((icon, i) => (
                   <HoverCard key={i}>
-                    <HoverCardContent className="w-30 mt-5 bg-slate-900">
+                    <HoverCardContent align="end" className="w-30 mt-5 bg-slate-900">
                       <div className="space-y-1 space-x-1">
                         <h5 className="text-sm text-white font-semibold">{icon.content}</h5>
                       </div>
@@ -422,7 +427,6 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                             if (maskingCanvas) {
                               setView(true)
                             }
-                            sendDataToAPI();
                           }
                           handleIconClick(icon.canvasClick)
                         }}
@@ -443,12 +447,12 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                     <BsThreeDots className="w-7 h-7 cursor-pointer" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="min-w-[70px] w-[70px]">
+                <DropdownMenuContent align="end" className="min-w-[70px] w-[70px]">
                   {
                     iconsDropDown.map((icon, i) => (
                       <DropdownMenuItem key={i}>
-                        <HoverCard >
-                          <HoverCardContent className="w-30 mt-5 bg-slate-900">
+                        <HoverCard>
+                          <HoverCardContent align="end" className="w-30 mt-5 bg-slate-900">
                             <div className="space-y-1 space-x-1">
                               <h5 className="text-sm text-white font-semibold">{icon.content}</h5>
                             </div>
@@ -466,6 +470,9 @@ const ImagePainter: React.FC<ImagePainterProps> = ({ imageBuffer }) => {
                                 }
                                 else if (icon.canvasClick === 'brush-') {
                                   setDrawSize((prev) => Math.max(prev - 1, 5))
+                                }
+                                else if (icon.canvasClick === 'generate') {
+                                  sendDataToAPI();
                                 }
                                 handleIconClick(icon.canvasClick)
                               }}
